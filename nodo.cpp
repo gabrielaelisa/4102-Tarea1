@@ -1,34 +1,46 @@
+#include <list>
 #include <string>
-#include <list> 
 using namespace std;
 
-class Nodo {
+/* clase nodo, un nodo almacena hasta M rectangulos*/
+class Rectangulo;
+class Nodo;
 
-public:
-
-    // constructor que deserializa una linea de un archivo 
-    Nodo(string line);
-    
-    // funcion que serializa un nodo
-    string to_line();
+class Nodo{
+public: 
+//aqui deben ir los constructores
+    Nodo();
+    // aca se debe serializar un nodo a un binario y escribirlo en un archivo
+    string to_string();
 
 private:
-    //llave del nodo
-    int x1, y1, x2, y2, x3, y3, x4, y4;
-     //puntero a hijos
-    list<Nodo> childs;
-    
+    // rectangulo padre
+    Rectangulo * rect_padre;
+    // lista de rectangulos hijos
+    list<Rectangulo> rect_hijos;
+
 };
-class Rectangulo {
+
+/* un rectangulo respresenta la MBR del nodo al cual apunta*/
+class Rectangulo{
 public:
-    Nodo nodo_actual;
-    Nodo hijo; // añadir la opción de tener como hijo una hoja?
+
+    //constructor para deserializar una linea de un archivo .txt 
+    Rectangulo(){
+    // aqui debe agregar los cuatro vertices al tributo mbr
+    
+    }
+private:
+
+    Nodo * nodo_actual;
+    Nodo * nodo_hijo; // añadir la opción de tener como hijo una hoja?
     list<int> MBR;
 
-    //constructor
-    Rectangulo(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4){
-        
-    }
-        //agregar los cuatro vertices a la lista de puntos
-    
+};
+
+
+
+int main(){
+
+    return 0;
 }
