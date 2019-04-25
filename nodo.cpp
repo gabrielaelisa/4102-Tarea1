@@ -1,23 +1,46 @@
 #include <list>
 #include <string>
+#include <fstream>
 using namespace std;
 
-/* clase nodo, un nodo almacena hasta M rectangulos*/
+// Cantidad de datos (rectangulos por nodo)
+#define M 200
+// Memoria total de un nodo:
+// Un rectangulo consiste de un puntero (8 bytes) a nodo y 4 puntos, donde
+// cada punto son dos enteros (4 bytes). La memoria total que utiliza un nodo
+// es la cantidad de nodos multiplicada por el tamaño de un rectangulo.
+#define MEMORIA_TOTAL (4+4*2)*M + 4
+
 class Rectangulo;
 class Nodo;
 
-class Nodo{
-public: 
-//aqui deben ir los constructores
-    Nodo();
-    // aca se debe serializar un nodo a un binario y escribirlo en un archivo
-    string to_string();
 
-private:
-    // rectangulo padre
-    Rectangulo * rect_padre;
-    // lista de rectangulos hijos
-    list<Rectangulo> rect_hijos;
+class Nodo{
+    
+    // La informacion de un nodo
+
+    Rectangulo padre;
+    int cantidadRec;
+    char * datos; // Rectangulos
+    fstream archivo;
+
+public: 
+    Nodo(char * id, Rectangulo nodo_padre){
+        padre= nodo_padre;
+        archivo.open(id, ios::binary | ios::ate);
+        int size= archivo.tellg();
+        datos = (char *) malloc(MEMORIA_TOTAL);
+        if(size!=0){
+            archivo.seekg(0, ios::beg);
+            archivo.read(datos, size);
+        }
+    }
+
+    void guardar(){
+        archivo.write(datos, cantidadRec*16+4);
+    }
+
+
 
 };
 
@@ -32,8 +55,8 @@ public:
     }
 private:
 
-    Nodo * nodo_actual;
-    Nodo * nodo_hijo; // añadir la opción de tener como hijo una hoja?
+    Nodo * nodo;
+    Nodo * hijo; // añadir la opción de tener como hijo una hoja?
     list<int> MBR;
 
 };
