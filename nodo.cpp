@@ -1,6 +1,9 @@
 #include <list>
 #include <string>
+#include <bitset>
 using namespace std;
+std::list<int>::iterator it;
+ 
 
 /* clase nodo, un nodo almacena hasta M rectangulos*/
 class Rectangulo;
@@ -11,7 +14,14 @@ public:
 //aqui deben ir los constructores
     Nodo();
     // aca se debe serializar un nodo a un binario y escribirlo en un archivo
-    string to_string();
+    string toString(){
+        for(it= rect_hijos.begin())
+
+    }
+
+    void instert_rectangle(){
+
+    }
 
 private:
     // rectangulo padre
@@ -30,6 +40,17 @@ public:
     // aqui debe agregar los cuatro vertices al tributo mbr
     
     }
+    string serialize(){
+        string serialized; 
+        for (it= MBR.begin(); it!= MBR.end(); it++){
+            string mys= to_string(*it);
+            serialized.append(mys);
+            if(it!= MBR.end()){
+                serialized.append(" ");
+            }
+            
+        }
+    }
 private:
 
     Nodo * nodo_actual;
@@ -38,9 +59,3 @@ private:
 
 };
 
-
-
-int main(){
-
-    return 0;
-}
