@@ -13,23 +13,23 @@ class Nodo;
 
 class Nodo{
 
-    fstream archivo;
-
 public: 
 //aqui deben ir los constructores
     
     // constructor raiz
     Nodo(char * id, Rectangulo * rec){
+        //crea el identificador del archivo que va a almacenar en disco
+        es_raiz=true;
         id_archivo= id;
-        archivo.open(id_archivo, ios::binary | ios::ate);
-        archivo << rec->MBR;
-        archivo.close;
-
+        FILE * f= fopen(id_archivo,"rw");
+        fwrite(rec->MBR , 1 , sizeof(rec->MBR) , f );
+        fclose(f);
 
     }
     // constructor nodo normal
     Nodo(char * id, Rectangulo rec, Rectangulo* padre)
     {
+        es_raiz=false;
         rect_padre= padre;
         id_archivo= id;
 
@@ -42,9 +42,8 @@ public:
 
 private:
     // rectangulo padre
+    bool es_raiz;
     Rectangulo * rect_padre;
-    // lista de rectangulos hijos
-    list<Rectangulo> rect_hijos;
     char * id_archivo;
 
 };
@@ -55,28 +54,16 @@ class Rectangulo{
 public:
     char * MBR;
 
-    //constructor para deserializar una linea de un archivo .txt 
+
     Rectangulo(){
     // aqui debe agregar los cuatro vertices al tributo mbr
     
     }
-    /*
-    string serialize(){
-        string serialized; 
-        for (it= MBR.begin(); it!= MBR.end(); it++){
-            string mys= to_string(*it);
-            serialized.append(mys);
-            if(it!= MBR.end()){
-                serialized.append(" ");
-            }
-            
-        }
-    }*/
+    
 private:
 
     Nodo * nodo_actual;
     Nodo * nodo_hijo; // añadir la opción de tener como hijo una hoja?
-    //list<int> MBR;
     
 
 };
