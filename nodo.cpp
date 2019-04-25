@@ -65,6 +65,10 @@ public:
             c=*(datos+4)
             // verificar si se cae dentro del rectangulo
 
+            /*pseudo codigo
+            si rec cae dentro de los puntos 
+            Nodo= rec.hijo()*/ 
+
 
 
         }
