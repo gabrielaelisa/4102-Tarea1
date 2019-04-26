@@ -10,6 +10,8 @@ public interface IRectangulo extends Serializable {
 
     int alto();
 
-    boolean isContain(IRectangulo rec);
+    boolean contains(IRectangulo rec);
+
+    boolean intersects(IRectangulo rec);
 
 }
