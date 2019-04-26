@@ -1,23 +1,19 @@
 import java.io.*;
-import INodo;
-import NodoHoja;
-import IRectangulo;
-import NodoUtils;
 
 public class RTree implements Serializable{
 
     private int idRaiz;
-    public string method;
+    public String method;
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
-    public INode current_node;
+    public INodo current_node;
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
-    public Rtree(IRectangulo rectangulo1){
+    public RTree(IRectangulo rectangulo1){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
-        current_node= NodoHoja(popNextnextId(),rectangulo);
-
+        current_node= NodoHoja(0,rectangulo1);
+        nextId++;
     }
 
     public int getIdRaiz(){
@@ -39,15 +35,14 @@ public class RTree implements Serializable{
 
     public void insertar(IRectangulo newrec){
         // es una hoja, entonces intentamos insertarlo
-        if(current_node.esHoja()){
-            if (!current_node.isfull()){
-                current_node.appendRectangulo(newrec)
+        if(current_node.esHoja()) {
+            if (!current_node.isfull()) {
+                current_node.appendRectangulo(newrec);
 
-            }
-            else
-            {
+            } else {
                 /* implementar heurísticas*/
             }
+        }
               
             
         // es un nodo interno, debo comparar con cada rectangulo
@@ -57,7 +52,7 @@ public class RTree implements Serializable{
             {
                 IRectangulo rec= current_node.rectangulos.get(x);
                 //este caso es facil, solo debo descender
-                if.rec.contains(newrec){
+                if(rec.contains(newrec)){
                     //envío nodo a disco
                     current_node.guardar();
                     // traigo nuevo nodo de disco
@@ -67,11 +62,11 @@ public class RTree implements Serializable{
 
                 }
                 // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-                else if rec.intersects(newrec){
+                else if(rec.intersects(newrec)){
 
             }
             // se repite el paso anterior pero usando un nuevo nodo de memoria
-            this.insertar(newrec)
+            this.insertar(newrec);
     }
 
         

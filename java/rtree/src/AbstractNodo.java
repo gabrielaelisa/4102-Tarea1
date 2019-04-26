@@ -2,6 +2,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+
 public abstract class AbstractNodo implements INodo {
 
     protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
@@ -9,7 +10,7 @@ public abstract class AbstractNodo implements INodo {
     private int id;
     private MBR mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
-    protected ArrayList<Rectangulo> rectangulos= new ArrayList<>(M);
+    protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
     private int idPadre;
 
 
@@ -30,19 +31,19 @@ public abstract class AbstractNodo implements INodo {
     }
 
     @Override
-    public Rectangulo getRectangulo(int pos){
+    public IRectangulo getRectangulo(int pos){
 
         return rectangulos.get(pos);
     }
 
     @Override
-    public void setRectangulo(int pos, Rectangulo rect){
+    public void setRectangulo(int pos, IRectangulo rect){
 
         rectangulos.set(pos, rect);
     }
 
     @Override
-    public void appendRectangulo(Rectangulo rect){
+    public void appendRectangulo(IRectangulo rect){
 
         rectangulos.add(++indiceUltimo, rect);
     }

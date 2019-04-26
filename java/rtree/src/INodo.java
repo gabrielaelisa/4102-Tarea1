@@ -8,11 +8,11 @@ public interface INodo extends Serializable {
 
     MBR getMbr();
 
-    Rectangulo getRectangulo(int pos);
+    IRectangulo getRectangulo(int pos);
 
-    void setRectangulo(int pos, Rectangulo rect);
+    void setRectangulo(int pos, IRectangulo rect);
 
-    void appendRectangulo(Rectangulo rec);
+    void appendRectangulo(IRectangulo rec);
 
     int cantidadRectangulos();
 
