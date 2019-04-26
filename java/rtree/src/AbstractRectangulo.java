@@ -1,4 +1,4 @@
-public abstract class AbstractRectangulo implements Rectangulo {
+public abstract class AbstractRectangulo implements IRectangulo {
 
     private int x;
     private int y;

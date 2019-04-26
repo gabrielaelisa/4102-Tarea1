@@ -2,7 +2,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public abstract class AbstractNodo implements Nodo {
+public abstract class AbstractNodo implements INodo {
 
     protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
     protected int m= 1000; // Cantidad minima de datos
