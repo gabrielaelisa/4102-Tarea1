@@ -17,4 +17,6 @@ public interface Nodo extends Serializable {
     int cantidadRectangulos();
 
     void guardar();
+
+    boolean isfull();
 }

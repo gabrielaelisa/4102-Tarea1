@@ -6,7 +6,7 @@ public abstract class AbstractRectangulo implements Rectangulo {
     private int alto;
     protected int idNodo; // id del Nodo al que apunta
 
-
+    // x e y son esquina inferior izquierda
     protected AbstractRectangulo(int idNodo, int x, int y, int ancho, int alto) {
         this.idNodo= idNodo;
         this.x= x;
@@ -16,12 +16,14 @@ public abstract class AbstractRectangulo implements Rectangulo {
     }
 
     @Override
-    public int getX() {
+    public int getX()
+    {
         return x;
     }
 
     @Override
     public int getY() {
+
         return y;
     }
 

@@ -19,6 +19,7 @@ public abstract class AbstractNodo implements Nodo {
 
     @Override
     public int getId(){
+
         return id;
     }
 
@@ -29,21 +30,25 @@ public abstract class AbstractNodo implements Nodo {
 
     @Override
     public Rectangulo getRectangulo(int pos){
+
         return rectangulos.get(pos);
     }
 
     @Override
     public void setRectangulo(int pos, Rectangulo rect){
+
         rectangulos.set(pos, rect);
     }
 
     @Override
     public void appendRectangulo(Rectangulo rect){
+
         rectangulos.add(++indiceUltimo, rect);
     }
 
     @Override
     public int cantidadRectangulos(){
+
         return indiceUltimo+1;
     }
 
@@ -58,6 +63,10 @@ public abstract class AbstractNodo implements Nodo {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    boolean isfool(){
+        return cantidadRectangulos()>= M;
     }
 
 }
