@@ -1,114 +1,96 @@
+
 #include <list>
 #include <string>
+#include <string.h> 
+#include <stdlib.h>
 #include <bitset>
 #include <fstream>
 #include <stdio.h>
 using namespace std;
-std::list<int>::iterator it;
+FILE * arbol;
  
+// Cantidad de datos
+#define M 10000
+#define TAMANO_LINEA 8+M*36
+#define NODO_INTERNO 0
+#define NODO_HOJA 1
+#define MBR 0
+#define DATO 1
 
-// Cantidad de datos (rectangulos por nodo)
-#define M 200
-// Memoria total de un nodo:
-// Un rectangulo consiste de un puntero (8 bytes) a nodo y 4 puntos, donde
-// cada punto son dos enteros (4 bytes). La memoria total que utiliza un nodo
-// es la cantidad de nodos multiplicada por el tamaño de un rectangulo.
-#define MEMORIA_TOTAL (4+4*2)*M + 4
-
-
+/* clase nodo, un nodo almacena hasta M rectangulos*/
 class Rectangulo;
-class Nodo;
-
+std::list<Rectangulo>::iterator it;
 
 class Nodo{
-    
-    // La informacion de un nodo
-
-    Rectangulo padre;
-    int cantidadRec;
-    char * datos; // Rectangulos
-    fstream archivo;
 
 public: 
-    /* Se crea un Nodo nuevo*/
-    Nodo(char * id, Rectangulo nodo_padre){
-        padre= nodo_padre;
-        archivo.open(id, ios::binary | ios::ate);
-        int size= archivo.tellg();
-        datos = (char *) malloc(MEMORIA_TOTAL);
-        if(size!=0){
-            archivo.seekg(0, ios::beg);
-            archivo.read(datos, size);
-        }
-    }
-    /* se debe leer archivo, ver si el rectángulo cae dentro de uno de los MBR */
-    void insertar( Rectangulo * rec){
-        //puntero a data
-        for (char c = *datos; c!= '/0'; c) {
-            int x1, x2, x3, x4;
-            int y1, y2, y3, y4;
-            memcpy( x1, c, 4 );
-            c=*(datos+4)
-            memcpy( y1, c, 4 );
-            c=*(datos+4)
-            memcpy( x2, c, 4 );
-            c=*(datos+4)
-            memcpy( y2, c, 4 );
-            c=*(datos+4)
-            memcpy( x3, c, 4 );
-            c=*(datos+4)
-            memcpy( y3, c, 4 );
-            c=*(datos+4)
-            memcpy( x4, c, 4 );
-            c=*(datos+4)
-            memcpy( y4, c, 4 );
-            c=*(datos+4)
-            // verificar si se cae dentro del rectangulo
+    int tipo=NODO_INTERNO; // (0 interno, 1 hoja)
+    int this_linea;
+    list<Rectangulo> hijos;
+    Rectangulo mbr_padre;
+  
+    Nodo(int linea, Rectangulo  rec, Rectangulo * padre){
 
-            /*pseudo codigo
-            si rec cae dentro de los puntos 
-            Nodo= rec.hijo()*/ 
+        if(rec.tipo==DATO) tipo=NODO_HOJA;
+        this_linea=linea;
 
-
-
+        //raiz
+        if (padre==NULL){
+            arbol = fopen("archivo_tarea", "rw");
+            setbuf(arbol, NULL);
+           
         }
 
-
+        // nodo
+        else
+        {
+            mbr_padre= *padre;
+        }  
+        hijos.push_back(rec);
+       
     }
-
     void guardar(){
-        archivo.write(datos, cantidadRec*16+4);
-    }
+        int * datos= (int*) malloc(TAMANO_LINEA);
+        memcpy(datos, &tipo, 4);
+        memcpy(datos +4, (int *)hijos.size(),4);
+        int pos=0;
+        for (it= hijos.begin(); it!= hijos.end(); it++)
+        {
+            if (tipo==NODO_HOJA){
+                memcpy(datos+8 + pos*36, it->puntos, 32);
+            }
+            else{            
+                memcpy(datos+8 + pos*36, it->nodo_hijo, 4);            
+                memcpy(datos+8 + pos*36 +4, it->puntos, 32);
+            } 
+            pos ++;
+            
 
+
+        }
+        fseek(arbol, this_linea, SEEK_SET);
+        fwrite(datos, 1 , TAMANO_LINEA, arbol ); 
+        free(datos);
+    }
 
 
 };
 
 /* un rectangulo respresenta la MBR del nodo al cual apunta*/
 class Rectangulo{
-public:
-
-    //constructor para deserializar una linea de un archivo .txt 
-    Rectangulo(){
-    // aqui debe agregar los cuatro vertices al tributo mbr
     
-    }
-    string serialize(){
-        string serialized; 
-        for (it= MBR.begin(); it!= MBR.end(); it++){
-            string mys= to_string(*it);
-            serialized.append(mys);
-            if(it!= MBR.end()){
-                serialized.append(" ");
-            }
-            
+public:
+    int tipo;
+    int puntos[8];
+    int * nodo_hijo;
+
+    Rectangulo(int* pts, int tipo){
+        tipo=tipo;
+        for(int i= 0; i<8; i++){
+            puntos[i]=pts[i];
         }
     }
-private:
-
-    Nodo * nodo;
-    Nodo * hijo; // añadir la opción de tener como hijo una hoja?
-    list<int> MBR;
 
 };
+
 
