@@ -2,11 +2,19 @@ import java.io.Serializable;
 
 public interface Nodo extends Serializable {
 
-    public boolean isNodoInterno();
+    boolean esHoja();
 
-    public boolean isNodoHoja();
+    int getId();
 
-    public int getId();
+    MBR getMbr();
 
-    public MBR getMbr();
+    Rectangulo getRectangulo(int pos);
+
+    void setRectangulo(int pos, Rectangulo rect);
+
+    void appendRectangulo(Rectangulo rec);
+
+    int cantidadRectangulos();
+
+    void guardar();
 }

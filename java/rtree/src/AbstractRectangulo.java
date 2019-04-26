@@ -1,18 +1,37 @@
-import javafx.util.Pair;
+public abstract class AbstractRectangulo implements Rectangulo {
 
-public abstract class AbstractRectangulo {
+    private int x;
+    private int y;
+    private int ancho;
+    private int alto;
+    protected int idNodo; // id del Nodo al que apunta
 
-    public Pair<Integer, Integer> p1;
-    public Pair<Integer, Integer> p2;
-    public Pair<Integer, Integer> p3;
-    public Pair<Integer, Integer> p4;
 
+    protected AbstractRectangulo(int idNodo, int x, int y, int ancho, int alto) {
+        this.idNodo= idNodo;
+        this.x= x;
+        this.y= y;
+        this.ancho= ancho;
+        this.alto= alto;
+    }
 
-    protected AbstractRectangulo(Pair<Integer, Integer> p1, Pair<Integer, Integer> p2,
-                                 Pair<Integer, Integer> p3, Pair<Integer, Integer> p4) {
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-        this.p4 = p4;
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
+
+    @Override
+    public int ancho() {
+        return ancho;
+    }
+
+    @Override
+    public int alto() {
+        return alto;
     }
 }
