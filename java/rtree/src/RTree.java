@@ -2,6 +2,7 @@ import java.io.*;
 import INodo;
 import NodoHoja;
 import IRectangulo;
+import NodoUtils;
 
 public class RTree implements Serializable{
 
@@ -15,7 +16,7 @@ public class RTree implements Serializable{
     public Rtree(IRectangulo rectangulo1){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
-        current_node= NodoHoja(nextId,rectangulo);
+        current_node= NodoHoja(popNextnextId(),rectangulo);
 
     }
 
@@ -37,10 +38,43 @@ public class RTree implements Serializable{
     }
 
     public void insertar(IRectangulo newrec){
+        // es una hoja, entonces intentamos insertarlo
         if(current_node.esHoja()){
-            
+            if (!current_node.isfull()){
+                current_node.appendRectangulo(newrec)
 
-        }
+            }
+            else
+            {
+                /* implementar heurísticas*/
+            }
+              
+            
+        // es un nodo interno, debo comparar con cada rectangulo
+        else
+        {
+            for (int x=0; x<current_node.cantidadRectangulos(); x++)
+            {
+                IRectangulo rec= current_node.rectangulos.get(x);
+                //este caso es facil, solo debo descender
+                if.rec.contains(newrec){
+                    //envío nodo a disco
+                    current_node.guardar();
+                    // traigo nuevo nodo de disco
+                    // debo destruir el nodo?
+                    current_node= leerNodo(rec.idNodo);
+                    break;
+
+                }
+                // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
+                else if.rec.intersects(newrec){
+
+            }
+            this.insertar(newrec)
+    }
+
+        
+}
 
 
     }

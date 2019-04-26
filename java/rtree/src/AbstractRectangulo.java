@@ -39,6 +39,7 @@ public abstract class AbstractRectangulo implements IRectangulo {
 
     //Calcula si el rectangulo intersecta con un rectangulo rec
     @Override
+<<<<<<< HEAD
     boolean intersects(IRectangulo rec){
         //vertice inferior izquierdo
         if(contains(rec.getX(), this.getX(), this.ancho()) && contains(rec.getY(), this.getY(), this.alto()))
@@ -51,6 +52,13 @@ public abstract class AbstractRectangulo implements IRectangulo {
         //vertice superior derecho
         if(contains(rec.getX()+rec.ancho(), this.getX(), this.ancho()) && contains(rec.getY()+rec.largo(), this.getY(), this.alto()))
             return true;
+=======
+    boolean contains(IRectangulo rec){
+        boolean contain = false;
+       //lado izq
+       if(rec.getX()+ rec.ancho()
+       
+>>>>>>> 56c33014f1d2ec4b4465c6e47104a2ef77c0d197
         
         //vertice inferior izquierdo
         if(contains(rec.getX(), this.getX(), this.ancho()) && contains(rec.getY()+rec.alto(), this.getY(), this.largo()))
