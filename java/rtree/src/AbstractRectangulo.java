@@ -48,4 +48,6 @@ public abstract class AbstractRectangulo implements IRectangulo {
         return contain;
     }
 
+    
+
 }

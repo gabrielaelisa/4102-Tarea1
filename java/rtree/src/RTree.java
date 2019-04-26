@@ -67,9 +67,10 @@ public class RTree implements Serializable{
 
                 }
                 // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-                else if.rec.intersects(newrec){
+                else if rec.intersects(newrec){
 
             }
+            // se repite el paso anterior pero usando un nuevo nodo de memoria
             this.insertar(newrec)
     }
 

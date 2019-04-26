@@ -19,4 +19,6 @@ public interface INodo extends Serializable {
     void guardar();
 
     boolean isfull();
+
+    void addPadre(int id);
 }

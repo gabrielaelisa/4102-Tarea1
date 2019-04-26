@@ -10,6 +10,7 @@ public abstract class AbstractNodo implements INodo {
     private MBR mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
     protected ArrayList<Rectangulo> rectangulos= new ArrayList<>(M);
+    private int idPadre;
 
 
     protected AbstractNodo(int id, MBR mbr){
@@ -67,6 +68,14 @@ public abstract class AbstractNodo implements INodo {
 
     boolean isfool(){
         return cantidadRectangulos()>= M;
+    }
+    
+    @Override
+    /* esta funcion agrega la linea que corresponde al padre de este nodo
+     esto va a servir al momento de mantener el invariante 1*/
+    public void addPadre(int padreID)
+    {
+        this.idPadre= padreID;
     }
 
 }
