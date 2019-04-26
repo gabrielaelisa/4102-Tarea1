@@ -36,4 +36,16 @@ public abstract class AbstractRectangulo implements IRectangulo {
     public int alto() {
         return alto;
     }
+
+    //Calcula si un rectangulo esta contenido o intersecta 
+    @Override
+    boolean isContain(IRectangulo rec){
+        boolean contain = false;
+       //lado izq
+       if(rec.getX()+ rec.ancho()
+       
+        
+        return contain;
+    }
+
 }

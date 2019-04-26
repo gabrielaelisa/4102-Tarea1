@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public interface Rectangulo extends Serializable {
+public interface IRectangulo extends Serializable {
 
     int getX();
 
@@ -9,5 +9,7 @@ public interface Rectangulo extends Serializable {
     int ancho();
 
     int alto();
+
+    boolean isContain(IRectangulo rec);
 
 }

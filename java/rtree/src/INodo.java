@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public interface Nodo extends Serializable {
+public interface INodo extends Serializable {
 
     boolean esHoja();
 
