@@ -16,9 +16,10 @@ FILE * arbol;
 #define NODO_HOJA 1
 #define MBR 0
 #define DATO 1
+#include "Rectangulo.h"
 
 /* clase nodo, un nodo almacena hasta M rectangulos*/
-class Rectangulo;
+
 std::list<Rectangulo>::iterator it;
 
 class Nodo{
@@ -72,25 +73,19 @@ public:
         fwrite(datos, 1 , TAMANO_LINEA, arbol ); 
         free(datos);
     }
-
-
-};
-
-/* un rectangulo respresenta la MBR del nodo al cual apunta*/
-class Rectangulo{
-    
-public:
-    int tipo;
-    int puntos[8];
-    int * nodo_hijo;
-
-    Rectangulo(int* pts, int tipo){
-        tipo=tipo;
-        for(int i= 0; i<8; i++){
-            puntos[i]=pts[i];
+    void instertar(Rectangulo rec){
+        if(hijos.size()==M){
+            guardar();
         }
+        else
+        {
+            hijos.push_back(rec);
+        }
+        
+
     }
 
 };
 
+main()
 
