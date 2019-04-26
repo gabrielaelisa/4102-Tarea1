@@ -37,7 +37,7 @@ public:
 
         //raiz
         if (padre==NULL){
-            arbol = fopen("archivo_tarea", "rw");
+            arbol = fopen("archivo_tarea", "w+");
             setbuf(arbol, NULL);
            
         }
@@ -52,11 +52,13 @@ public:
     }
     void guardar(){
         int * datos= (int*) malloc(TAMANO_LINEA);
+        printf("entra aqui");
         memcpy(datos, &tipo, 4);
         memcpy(datos +4, (int *)hijos.size(),4);
         int pos=0;
         for (it= hijos.begin(); it!= hijos.end(); it++)
         {
+            printf("for :%d\n", pos);
             if (tipo==NODO_HOJA){
                 memcpy(datos+8 + pos*36, it->puntos, 32);
             }
@@ -69,12 +71,14 @@ public:
 
 
         }
-        fseek(arbol, this_linea, SEEK_SET);
-        fwrite(datos, 1 , TAMANO_LINEA, arbol ); 
+        //fseek(arbol, this_linea, SEEK_SET);
+        fwrite(datos, 4 , TAMANO_LINEA, arbol ); 
+        fclose(arbol);
         free(datos);
     }
     void instertar(Rectangulo rec){
-        if(hijos.size()==M){
+        if((int)hijos.size()==M){
+            printf("entra a guardar");
             guardar();
         }
         else
@@ -87,5 +91,15 @@ public:
 
 };
 
-main()
+main(int argc, char *argv[]){
+    int val[8] = { 1,1,2,1, 1,2 ,2,2 };
+    Rectangulo R= Rectangulo(val, DATO);
+    Nodo n= Nodo(1, R, NULL);
+    for(int i=0; i<M; i++){
+        printf("%d\n", i);
+        int val[8] = { 1,1,2,1, 1,2 ,2,2 };
+        Rectangulo R= Rectangulo(val, DATO);
+        n.instertar(R);
+    }
+}
 
