@@ -12,4 +12,6 @@ public interface IRectangulo extends Serializable {
 
     boolean contains(IRectangulo rec);
 
+    boolean intersects(IRectangulo rec);
+
 }
