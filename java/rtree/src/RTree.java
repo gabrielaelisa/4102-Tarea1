@@ -7,12 +7,13 @@ public class RTree implements Serializable{
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
     public INodo current_node;
+    protected NodoUtils u = new NodoUtils();
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
     public RTree(IRectangulo rectangulo1){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
-        current_node= NodoHoja(0,rectangulo1);
+        current_node= new NodoHoja(0,rectangulo1);
         nextId++;
     }
 
@@ -50,14 +51,14 @@ public class RTree implements Serializable{
         {
             for (int x=0; x<current_node.cantidadRectangulos(); x++)
             {
-                IRectangulo rec= current_node.rectangulos.get(x);
+                IRectangulo rec= current_node.getRectangulo(x);
                 //este caso es facil, solo debo descender
                 if(rec.contains(newrec)){
                     //envío nodo a disco
                     current_node.guardar();
                     // traigo nuevo nodo de disco
                     // debo destruir el nodo?
-                    current_node= leerNodo(rec.idNodo);
+                    current_node= u.leerNodo(rec.getIdNodo());
                     break;
 
                 }

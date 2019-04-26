@@ -6,6 +6,8 @@ public interface IRectangulo extends Serializable {
 
     int getY();
 
+    int getIdNodo();
+
     int ancho();
 
     int alto();

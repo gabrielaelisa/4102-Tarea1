@@ -1,6 +1,6 @@
 public class NodoInterno extends AbstractNodo {
 
-    public NodoInterno(int id, MBR mbr){
+    public NodoInterno(int id, IRectangulo mbr){
 
         super(id, mbr);
     }

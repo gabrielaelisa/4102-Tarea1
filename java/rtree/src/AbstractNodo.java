@@ -8,13 +8,13 @@ public abstract class AbstractNodo implements INodo {
     protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
     protected int m= 1000; // Cantidad minima de datos
     private int id;
-    private MBR mbr;
+    private IRectangulo mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
     protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
     private int idPadre;
 
 
-    protected AbstractNodo(int id, MBR mbr){
+    protected AbstractNodo(int id, IRectangulo mbr){
         this.id= id;
         this.mbr= mbr;
     }
@@ -26,7 +26,7 @@ public abstract class AbstractNodo implements INodo {
     }
 
     @Override
-    public MBR getMbr(){
+    public IRectangulo getMbr(){
         return mbr;
     }
 
@@ -67,7 +67,8 @@ public abstract class AbstractNodo implements INodo {
         }
     }
 
-    boolean isfool(){
+    @Override
+    public boolean isfull(){
         return cantidadRectangulos()>= M;
     }
     

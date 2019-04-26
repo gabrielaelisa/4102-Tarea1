@@ -6,7 +6,7 @@ public interface INodo extends Serializable {
 
     int getId();
 
-    MBR getMbr();
+    IRectangulo getMbr();
 
     IRectangulo getRectangulo(int pos);
 
