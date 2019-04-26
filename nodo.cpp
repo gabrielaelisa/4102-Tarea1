@@ -29,9 +29,9 @@ public:
     int cantidadElementos=0;
     int this_linea;
     int * datos;
-    Rectangulo mbr_padre;
+    Rectangulo * mbr_padre;
   
-    Nodo(int linea, Rectangulo  rec, Rectangulo * padre){
+    Nodo(int linea, Rectangulo * rec, Rectangulo * padre){
         datos= (int*) malloc(TAMANO_LINEA);
         if(rec.tipo==DATO) tipo=NODO_HOJA;
         this_linea=linea;
@@ -40,16 +40,15 @@ public:
         if (padre==NULL){
             arbol = fopen("archivo_tarea", "rw");
             setbuf(arbol, NULL);
-            append(rec);
         }
 
         // nodo
         else
         {
-            mbr_padre= *padre;
-            append(rec);
+            mbr_padre= padre;
         }  
-       
+        append(*rec);
+        datos[0]= tipo; 
     }
     void append(Rectangulo rec){
         set_rect(cantidadElementos, rec);
@@ -75,6 +74,7 @@ public:
 
     // aqui se implementa el metodo para mandar el nodo a disco cuando se descienda por algun rectangulo
     void guardar(){
+        datos[1]= cantidadElementos;
         fseek(arbol, this_linea, SEEK_SET);
         fwrite(datos, 1 , TAMANO_LINEA, arbol );
     }
@@ -90,6 +90,7 @@ public:
     Nodo * nodo_actual;
     int nodo_hijo;
 
+
     Rectangulo(int* pts, int tipo){
         tipo=tipo;
         for(int i= 0; i<8; i++){
@@ -97,6 +98,5 @@ public:
         }
     }  
 
-    int area
 
 };
