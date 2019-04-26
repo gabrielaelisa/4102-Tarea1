@@ -1,4 +1,7 @@
 import java.io.*;
+import INodo;
+import NodoHoja;
+import IRectangulo;
 
 public class RTree implements Serializable{
 
@@ -6,6 +9,15 @@ public class RTree implements Serializable{
     public string method;
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
+    public INode current_node;
+
+    // constructor de la raiz, recibe un dato y crea el nodo contenedor
+    public Rtree(IRectangulo rectangulo1){
+        /* este es el nodo que tenemos actualmente cargado en memoria
+         siempre habra un nodo cargado en memoria */
+        current_node= NodoHoja(nextId,rectangulo);
+
+    }
 
     public int getIdRaiz(){
 
@@ -22,6 +34,15 @@ public class RTree implements Serializable{
     {
 
         return nextId++;
+    }
+
+    public void insertar(IRectangulo newrec){
+        if(current_node.esHoja()){
+            
+
+        }
+
+
     }
 
 
