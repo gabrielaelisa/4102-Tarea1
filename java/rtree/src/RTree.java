@@ -1,3 +1,5 @@
+import com.sun.corba.se.impl.resolver.INSURLOperationImpl;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -16,6 +18,8 @@ public class RTree implements Serializable{
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
         current_node= new NodoHoja(0,rectangulo1);
+        // agregamos el campo contenedor del nodo rectangulo
+        rectangulo1.SetContainer(current_node.getId());
         nextId++;
     }
 
@@ -38,12 +42,25 @@ public class RTree implements Serializable{
 
     // recorrer el nodo desde la ultima hoja a la raiz, para recuperar invariante 1
 
-    public void actualiar(){
+    public void actualizar(){
         return;
     }
 
 
-    public void linearSplit(IRectangulo dato){
+    public void Split(IRectangulo rec){
+
+        INodo nodo1;
+        INodo nodo2;
+
+        if current_node.esHoja(){
+
+        }
+
+        else{
+
+        }
+
+
 
 
     }
@@ -69,10 +86,11 @@ public class RTree implements Serializable{
         if(current_node.esHoja()) {
             if (!current_node.isfull()) {
                 current_node.appendRectangulo(dato);
-                this.actualiar();
+                dato.SetContainer(current_node.getId());
+                this.actualizar();
 
             } else {
-                this.linearSplit(dato);
+                this.Split(dato);
             }
 
         }

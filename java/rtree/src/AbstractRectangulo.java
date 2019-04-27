@@ -5,6 +5,7 @@ public abstract class AbstractRectangulo implements IRectangulo {
     private int ancho;
     private int alto;
     protected int idNodo; // id del Nodo al que apunta
+    protected int idContainer;
 
     // x e y son esquina inferior izquierda
     protected AbstractRectangulo(int idNodo, int x, int y, int ancho, int alto) {
@@ -13,6 +14,10 @@ public abstract class AbstractRectangulo implements IRectangulo {
         this.y = y;
         this.ancho = ancho;
         this.alto = alto;
+    }
+
+    public void SetContainer(int id){
+        this.idContainer= id;
     }
 
     @Override
@@ -46,6 +51,11 @@ public abstract class AbstractRectangulo implements IRectangulo {
     public boolean contains2(int x, int y, int a) {
         return x > y && x < y + a;
 
+    }
+
+    public void ampliar(IRectangulo rect){
+        // todo esta funcion cambia las coordenadas de un rectangulo para abarcar a rect
+        return;
     }
 
     @Override

@@ -10,6 +10,7 @@ public abstract class AbstractNodo implements INodo {
     private int id;
     // corresponde al padre de este nodo
     private IRectangulo padre = null;
+    // corresponde al rectangulo que representa el area de este nodo
     private IRectangulo mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
     protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
@@ -17,7 +18,7 @@ public abstract class AbstractNodo implements INodo {
 
     protected AbstractNodo(int id, IRectangulo mbr){
         this.id= id;
-        this.mbr= mbr;
+        this.mbr= new MBR(-1, mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
         this.appendRectangulo(mbr);
     }
 
@@ -48,6 +49,8 @@ public abstract class AbstractNodo implements INodo {
     public void appendRectangulo(IRectangulo rect){
 
         rectangulos.add(++indiceUltimo, rect);
+        this.mbr.ampliar(rect);
+
     }
 
     @Override
