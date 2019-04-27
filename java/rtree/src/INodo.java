@@ -6,17 +6,20 @@ public interface INodo extends Serializable {
 
     int getId();
 
-    MBR getMbr();
+    IRectangulo getMbr();
 
-    Rectangulo getRectangulo(int pos);
+    IRectangulo getRectangulo(int pos);
 
-    void setRectangulo(int pos, Rectangulo rect);
+    void setRectangulo(int pos, IRectangulo rect);
 
-    void appendRectangulo(Rectangulo rec);
+    void appendRectangulo(IRectangulo rec);
 
     int cantidadRectangulos();
 
     void guardar();
 
     boolean isfull();
+
+    IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
+
 }

@@ -1,5 +1,5 @@
 
-public class Main {
+/*public class Main {
 
     public static void main(String[] args) {
         RTree tree= new RTree();
@@ -25,4 +25,12 @@ public class Main {
         System.out.println(nodo.getRectangulo(0).getX());
 
     }
+}*/
+
+public class Main {
+    Dato d1= new Dato(0,0,1,1);
+    RTree tree= new RTree(d1);
+
+
+
 }

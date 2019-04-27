@@ -1,7 +1,7 @@
 public class NodoHoja extends AbstractNodo {
 
 
-    public NodoHoja(int id, MBR mbr){
+    public NodoHoja(int id, IRectangulo mbr){
 
         super(id, mbr);
     }

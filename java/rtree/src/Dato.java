@@ -4,4 +4,6 @@ public class Dato extends AbstractRectangulo {
         super(-1, x, y, ancho, alto);
     }
 
+    public boolean esDato(){ return  true;}
+
 }

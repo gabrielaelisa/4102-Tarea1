@@ -7,4 +7,6 @@ public class MBR extends AbstractRectangulo {
     public int getIdNodo(){
         return idNodo;
     }
+
+    public boolean esDato(){ return  false;}
 }

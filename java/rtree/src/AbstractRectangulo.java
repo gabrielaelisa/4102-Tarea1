@@ -5,14 +5,19 @@ public abstract class AbstractRectangulo implements IRectangulo {
     private int ancho;
     private int alto;
     protected int idNodo; // id del Nodo al que apunta
+    protected int idContainer;
 
     // x e y son esquina inferior izquierda
     protected AbstractRectangulo(int idNodo, int x, int y, int ancho, int alto) {
-        this.idNodo= idNodo;
-        this.x= x;
-        this.y= y;
-        this.ancho= ancho;
-        this.alto= alto;
+        this.idNodo = idNodo;
+        this.x = x;
+        this.y = y;
+        this.ancho = ancho;
+        this.alto = alto;
+    }
+
+    public void SetContainer(int id){
+        this.idContainer= id;
     }
 
 
@@ -21,8 +26,7 @@ public abstract class AbstractRectangulo implements IRectangulo {
         return idNodo;
     }
     @Override
-    public int getX()
-    {
+    public int getX() {
         return x;
     }
 
@@ -30,6 +34,11 @@ public abstract class AbstractRectangulo implements IRectangulo {
     public int getY() {
 
         return y;
+    }
+
+    @Override
+    public int getIdNodo() {
+        return idNodo;
     }
 
     @Override
@@ -42,15 +51,26 @@ public abstract class AbstractRectangulo implements IRectangulo {
         return alto;
     }
 
-    //Calcula si el rectangulo intersecta con un rectangulo rec
+
+    //Verifica si x esta contenido en el intervalo [y, y+a]
+    public boolean contains2(int x, int y, int a) {
+        return x > y && x < y + a;
+
+    }
+
+    public void ampliar(IRectangulo rect){
+        // todo esta funcion cambia las coordenadas de un rectangulo para abarcar a rect
+        return;
+    }
+
     @Override
     public boolean intersects(IRectangulo rec){
         //vertice inferior izquierdo
-        if(contains(rec.getX(), this.getX(), this.ancho()) && contains(rec.getY(), this.getY(), this.alto()))
+        if(contains2(rec.getX(), this.getX(), this.ancho()) && contains2(rec.getY(), this.getY(), this.alto()))
             return true;
 
-        //vertice inferior derecho 
-        if(contains(rec.getX()+rec.ancho(), this.getX(), this.ancho()) && contains(rec.getY(), this.getY(), this.alto()))
+        //vertice inferior derecho
+        if(contains2(rec.getX()+rec.ancho(), this.getX(), this.ancho()) && contains2(rec.getY(), this.getY(), this.alto()))
             return true;
 
         //vertice superior derecho
@@ -64,15 +84,16 @@ public abstract class AbstractRectangulo implements IRectangulo {
         return false;
     }
 
-    //Verifica si el rectangulo rec esta completamente contenido 
+
+    //Verifica si el rectangulo rec esta completamente contenido
     @Override
     public boolean contains(IRectangulo rec){
         //vertice inferior izquierdo
-        if(!contains(rec.getX(), this.getX(), this.ancho()) && !contains(rec.getY(), this.getY(), this.alto()))
+        if(!contains2(rec.getX(), this.getX(), this.ancho()) && !contains2(rec.getY(), this.getY(), this.alto()))
             return false;
 
-        //vertice inferior derecho 
-        if(!contains(rec.getX()+rec.ancho(), this.getX(), this.ancho()) && !contains(rec.getY(), this.getY(), this.alto()))
+        //vertice inferior derecho
+        if(!contains2(rec.getX()+rec.ancho(), this.getX(), this.ancho()) && !contains2(rec.getY(), this.getY(), this.alto()))
             return false;
 
         //vertice superior derecho
@@ -85,7 +106,14 @@ public abstract class AbstractRectangulo implements IRectangulo {
         
         return true;
     }
+    @Override
+    //esta funcion debe entregar la diferencia entre el mbr nuevo y lainterseccion entre 2 mbr, 0 si son iguales
+    // o esta contenido
+    public int interseccion(IRectangulo rec){
+        // todo vicente
+        return 0;
 
+    }
 
     //Verifica si x esta contenido en el intervalo [y, y+a]
     public boolean contains(int x, int y, int a){

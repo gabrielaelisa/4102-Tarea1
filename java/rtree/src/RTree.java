@@ -1,23 +1,26 @@
+import com.sun.corba.se.impl.resolver.INSURLOperationImpl;
+
 import java.io.*;
-import INodo;
-import NodoHoja;
-import IRectangulo;
-import NodoUtils;
+import java.util.ArrayList;
 
 public class RTree implements Serializable{
 
     private int idRaiz;
-    public string method;
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
-    public INode current_node;
+    public INodo current_node;
+    // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
+    public boolean reajustar= false;
+    protected NodoUtils u = new NodoUtils();
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
-    public Rtree(IRectangulo rectangulo1){
+    public RTree(Dato rectangulo1){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
-        current_node= NodoHoja(popNextnextId(),rectangulo);
-
+        current_node= new NodoHoja(0,rectangulo1);
+        // agregamos el campo contenedor del nodo rectangulo
+        rectangulo1.SetContainer(current_node.getId());
+        nextId++;
     }
 
     public int getIdRaiz(){
@@ -37,47 +40,87 @@ public class RTree implements Serializable{
         return nextId++;
     }
 
-    public void insertar(IRectangulo newrec){
-        // es una hoja, entonces intentamos insertarlo
-        if(current_node.esHoja()){
-            if (!current_node.isfull()){
-                current_node.appendRectangulo(newrec)
+    // recorrer el nodo desde la ultima hoja a la raiz, para recuperar invariante 1
 
+    public void actualizar(){
+        return;
+    }
+
+
+    public void Split(IRectangulo rec){
+
+        INodo nodo1;
+        INodo nodo2;
+
+        if current_node.esHoja(){
+
+        }
+
+        else{
+
+        }
+
+
+
+
+    }
+
+    public void insertar(IRectangulo newrec){
+        // estamos insertando un dato
+        if(newrec.esDato()){
+            insertar_dato(newrec);
+        }
+
+        // estamos insertando una mbr
+        else{
+            insertar_MBR(newrec);
+        }
+
+
+        
+    }
+
+    public void insertar_dato(IRectangulo dato){
+
+        // es una hoja, entonces intentamos insertarlo
+        if(current_node.esHoja()) {
+            if (!current_node.isfull()) {
+                current_node.appendRectangulo(dato);
+                dato.SetContainer(current_node.getId());
+                this.actualizar();
+
+            } else {
+                this.Split(dato);
             }
-            else
-            {
-                /* implementar heurísticas*/
-            }
-              
-            
+
+        }
+
+
         // es un nodo interno, debo comparar con cada rectangulo
         else
         {
-            for (int x=0; x<current_node.cantidadRectangulos(); x++)
-            {
-                IRectangulo rec= current_node.rectangulos.get(x);
-                //este caso es facil, solo debo descender
-                if.rec.contains(newrec){
-                    //envío nodo a disco
-                    current_node.guardar();
-                    // traigo nuevo nodo de disco
-                    // debo destruir el nodo?
-                    current_node= leerNodo(rec.idNodo);
-                    break;
+            //rectángulo que aumenta menos su MBR
 
-                }
-                // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-                else if.rec.intersects(newrec){
+            IRectangulo target_rec= current_node.target_rectangulo(dato, this);
 
-            }
-            this.insertar(newrec)
+            // envío nodo a disco, traigo nuevo nodo de disco y nodo es recolectado por gc
+
+            current_node.guardar();
+            current_node= this.u.leerNodo(target_rec.getIdNodo());
+            // se repite el paso anterior pero usando un nuevo nodo de memoria
+            this.insertar(dato);
+        }
+
+
+
     }
 
-        
-}
+    public void insertar_MBR(IRectangulo mbr){
+
+    }
 
 
     }
 
 
-}
+
