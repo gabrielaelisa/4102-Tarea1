@@ -27,4 +27,10 @@
     }
 }*/
 
+public class Main {
+    Dato d1= new Dato(0,0,1,1);
+    RTree tree= new RTree(d1);
 
+
+
+}

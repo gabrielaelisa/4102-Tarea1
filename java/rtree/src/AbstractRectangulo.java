@@ -69,6 +69,20 @@ public abstract class AbstractRectangulo implements IRectangulo {
         return false;
     }
 
+    /*@Override
+    public boolean intersects2(IRectangulo rec){
+        int this_area= this.alto()*this.ancho();
+        int rec_area= rec.alto()*rec.ancho();
+        if(rec_area>this_area) return false;
+
+        else{
+            int angulo = Math.atan(int(rec.getY()-this.getY()/(rec.getX()-this.getX())));
+            if(angulo>=0){return true;}
+
+
+        }
+    }*/
+
     //Verifica si el rectangulo rec esta completamente contenido
     @Override
     public boolean contains(IRectangulo rec){

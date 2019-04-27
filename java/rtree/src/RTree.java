@@ -53,6 +53,7 @@ public class RTree implements Serializable{
         {
             //rectángulo que aumenta menos su MBR
             IRectangulo target_rec= null;
+            int min_grow= Integer.MAX_VALUE;
             int min_area= Integer.MAX_VALUE;
 
             for (int x=0; x<current_node.cantidadRectangulos(); x++) {
@@ -66,7 +67,14 @@ public class RTree implements Serializable{
                 }
                 // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
                 else if (rec.intersects(newrec)) {
-                    if (rec.interseccion(newrec) < min_area) target_rec = rec;
+                    if (rec.interseccion(newrec) < min_grow) {
+                        target_rec = rec;
+                        min_area= rec.ancho()*rec.alto();
+                    }
+                    // en caso de empate se baja por el MBR que tenga menor area
+                    if(rec.interseccion(newrec)== min_grow){
+                        if(rec.ancho()*rec.alto()<min_area) target_rec=rec;
+                    }
 
 
                 }
