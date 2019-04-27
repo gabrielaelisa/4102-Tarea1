@@ -18,4 +18,6 @@ public interface IRectangulo extends Serializable {
 
     boolean intersects(IRectangulo rec);
 
+    int interseccion(IRectangulo rec);
+
 }

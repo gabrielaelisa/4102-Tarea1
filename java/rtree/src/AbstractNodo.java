@@ -8,15 +8,17 @@ public abstract class AbstractNodo implements INodo {
     protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
     protected int m= 1000; // Cantidad minima de datos
     private int id;
+    // corresponde al padre de este nodo
+    private IRectangulo padre = null;
     private IRectangulo mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
     protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
-    private int idPadre;
 
 
     protected AbstractNodo(int id, IRectangulo mbr){
         this.id= id;
         this.mbr= mbr;
+        this.appendRectangulo(mbr);
     }
 
     @Override
@@ -71,13 +73,6 @@ public abstract class AbstractNodo implements INodo {
     public boolean isfull(){
         return cantidadRectangulos()>= M;
     }
-    
-    @Override
-    /* esta funcion agrega la linea que corresponde al padre de este nodo
-     esto va a servir al momento de mantener el invariante 1*/
-    public void addPadre(int padreID)
-    {
-        this.idPadre= padreID;
-    }
+
 
 }

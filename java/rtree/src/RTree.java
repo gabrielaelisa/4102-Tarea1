@@ -1,12 +1,14 @@
 import java.io.*;
+import java.util.ArrayList;
 
 public class RTree implements Serializable{
 
     private int idRaiz;
-    public String method;
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
     public INodo current_node;
+    // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
+    public boolean reajustar= false;
     protected NodoUtils u = new NodoUtils();
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
@@ -40,7 +42,7 @@ public class RTree implements Serializable{
             if (!current_node.isfull()) {
                 current_node.appendRectangulo(newrec);
 
-            } else {
+            } else { // la hoja está llena
                 /* implementar heurísticas*/
             }
         }
@@ -49,32 +51,42 @@ public class RTree implements Serializable{
         // es un nodo interno, debo comparar con cada rectangulo
         else
         {
-            for (int x=0; x<current_node.cantidadRectangulos(); x++)
-            {
-                IRectangulo rec= current_node.getRectangulo(x);
+            //rectángulo que aumenta menos su MBR
+            IRectangulo target_rec= null;
+            int min_area= Integer.MAX_VALUE;
+
+            for (int x=0; x<current_node.cantidadRectangulos(); x++) {
+
+                IRectangulo rec = current_node.getRectangulo(x);
                 //este caso es facil, solo debo descender
-                if(rec.contains(newrec)){
-                    //envío nodo a disco
-                    current_node.guardar();
-                    // traigo nuevo nodo de disco
-                    // debo destruir el nodo?
-                    current_node= u.leerNodo(rec.getIdNodo());
+                if (rec.contains(newrec)) {
+                    target_rec = rec;
                     break;
 
                 }
                 // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-                else if(rec.intersects(newrec)){
+                else if (rec.intersects(newrec)) {
+                    if (rec.interseccion(newrec) < min_area) target_rec = rec;
+
+
+                }
 
             }
+            /*envío nodo a disco
+             traigo nuevo nodo de disco
+            nodo es recolectado por gc*/
+
+            current_node.guardar();
+            current_node= this.u.leerNodo(target_rec.getIdNodo());
             // se repite el paso anterior pero usando un nuevo nodo de memoria
             this.insertar(newrec);
-    }
+        }
 
         
-}
+    }
 
 
     }
 
 
-}
+
