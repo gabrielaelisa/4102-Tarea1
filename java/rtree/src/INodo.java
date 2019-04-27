@@ -20,4 +20,6 @@ public interface INodo extends Serializable {
 
     boolean isfull();
 
+    IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
+
 }

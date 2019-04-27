@@ -13,8 +13,5 @@ public class NodoUtils {
             return null;
         }
     }
-    // Linear split; Nodo hoja-> 2 rectángulos y guarda 2 nodo hoja
-
-
 
 }

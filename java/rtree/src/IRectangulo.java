@@ -2,6 +2,8 @@ import java.io.Serializable;
 
 public interface IRectangulo extends Serializable {
 
+    boolean esDato();
+
     int getX();
 
     int getY();
