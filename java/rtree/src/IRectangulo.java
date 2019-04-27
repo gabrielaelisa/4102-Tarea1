@@ -1,6 +1,7 @@
 import java.io.Serializable;
 
 public interface IRectangulo extends Serializable {
+    int getId();
 
     int getX();
 
@@ -10,8 +11,8 @@ public interface IRectangulo extends Serializable {
 
     int alto();
 
-    boolean contains(IRectangulo rec);
+    public boolean contains(IRectangulo rec);
 
-    boolean intersects(IRectangulo rec);
+    public boolean intersects(IRectangulo rec);
 
 }

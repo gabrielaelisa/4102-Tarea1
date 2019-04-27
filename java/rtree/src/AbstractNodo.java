@@ -9,7 +9,7 @@ public abstract class AbstractNodo implements INodo {
     private int id;
     private MBR mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
-    protected ArrayList<Rectangulo> rectangulos= new ArrayList<>(M);
+    protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
 
 
     protected AbstractNodo(int id, MBR mbr){
