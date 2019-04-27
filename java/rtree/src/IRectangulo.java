@@ -26,4 +26,6 @@ public interface IRectangulo extends Serializable {
 
     void ampliar(IRectangulo rec);
 
+    IRectangulo popNextRectangulo();
+
 }

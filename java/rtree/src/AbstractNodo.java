@@ -116,5 +116,11 @@ public abstract class AbstractNodo implements INodo {
 
     }
 
+    public IRectangulo popNextRectangulo(){
+        IRectangulo rec =null;
+        //todo saca un rectangulo del arraylist y lo borra de la lista
+        return rec ;
+    }
+
 
 }
