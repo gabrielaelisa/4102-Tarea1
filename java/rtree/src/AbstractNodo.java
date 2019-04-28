@@ -157,9 +157,17 @@ public abstract class AbstractNodo implements INodo {
         return rec ;
     }
 
-    public void deleteRectangulo( IRectangulo rec){
+    public void eliminarRectangulo( IRectangulo rec){
         this.rectangulos.remove(rec);
         indiceUltimo--;
+    }
+    // popea el rectangulo en posicion 0 y lo elimina de la lista
+    public IRectangulo popRectangulo(){
+        IRectangulo rec =getRectangulo(0);
+        eliminarRectangulo(rec);
+        return rec;
+
+
     }
 
 
