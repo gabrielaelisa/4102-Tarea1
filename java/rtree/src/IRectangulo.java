@@ -13,8 +13,6 @@ public interface IRectangulo extends Serializable {
 
     int getIdContainer();
 
-    public void updateidNodo(int newid);
-
     int ancho();
 
     int alto();

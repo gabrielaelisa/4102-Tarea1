@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class RTree implements Serializable{
 
     private int idRaiz;
+    private int altura=0;
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
     public INodo current_node;
@@ -20,8 +21,8 @@ public class RTree implements Serializable{
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
         this.split =split;
-        current_node= new NodoHoja(0,rectangulo1);
-        nextId++;
+        current_node= new NodoHoja(popNextId(),rectangulo1);
+        this.idRaiz= current_node.getId();
     }
 
     public int getIdRaiz(){
@@ -84,39 +85,41 @@ public class RTree implements Serializable{
 
             IRectangulo rect_izq= nodo_izq.getMbr();
             IRectangulo rect_der=nodo_der.getMbr();
+            nodo_izq.setPadre(rect_izq);
+            nodo_der.setPadre(rect_der);
+            //mandamos nodo_izq y derecho a disco
+            nodo_izq.guardar();
+            nodo_der.guardar();
 
 
             // se debe actualizar el padre y agrerar rectangulos rect_izq y rect_der
             if(current_node.tienePadre()){
                 IRectangulo padre= current_node.getPadre();
+                // se debe destruir el archivo de current node
+                current_node.eliminar();
+                current_node= this.u.leerNodo(padre.getIdContainer());
+
+
+
 
             }
             // se debe crear nuevo nodo interno
             else{
 
+                current_node.eliminar();
+
+                //-----------------------------------------------------------------------
+
                 NodoInterno nueva_raiz = new NodoInterno(this.popNextId(), rect_izq);
                 current_node= nueva_raiz;
-                nueva_raiz.appendRectangulo(rect_der);
                 this.idRaiz= nueva_raiz.getId();
-                rect_izq.updateidNodo(nodo_izq.getId());
-                rect_der.updateidNodo(nodo_der.getId());
-                //mandamos nodo_izq y derecho a disco
-                nodo_izq.guardar();
-                nodo_der.guardar();
+                this.altura++;
+                nueva_raiz.appendRectangulo(rect_der);
 
             }
 
 
-            //llamamos al gc
-            nodo_izq=null;
-            nodo_der=null;
-            // se debe destruir el archivo de current node
-            current_node.eliminar();
-            {
 
-
-            }
-            current_node= this.u.leerNodo(padre.getIdContainer());
 
         }
 
@@ -156,7 +159,6 @@ public class RTree implements Serializable{
             // la hoja tiene espacio
             if (!current_node.isfull()) {
                 current_node.appendRectangulo(dato);
-                dato.SetContainer(current_node.getId());
                 this.actualizar();
 
             } else {

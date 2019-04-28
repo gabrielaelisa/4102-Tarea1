@@ -30,4 +30,6 @@ public interface INodo extends Serializable {
 
     IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
 
+    void deleteRectangulo( IRectangulo rec);
+
 }

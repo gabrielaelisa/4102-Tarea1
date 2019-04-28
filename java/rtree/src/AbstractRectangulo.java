@@ -20,11 +20,6 @@ public abstract class AbstractRectangulo implements IRectangulo {
         this.idContainer= id;
     }
 
-    @Override
-    public void updateidNodo(int newid){
-        this.idNodo= newid;
-    }
-
 
     @Override
     public int getId(){
