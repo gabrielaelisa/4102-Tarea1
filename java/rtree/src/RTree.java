@@ -11,6 +11,7 @@ public class RTree implements Serializable{
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
     public INodo current_node;
+    public boolean hay_input_cargado=true;
     // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
     public boolean reajustar= false;
     protected NodoUtils u = new NodoUtils();
@@ -122,6 +123,7 @@ public class RTree implements Serializable{
             current_node.eliminar();
             NodoInterno nueva_raiz = new NodoInterno(this.popNextId(), rect_izq);
             current_node= nueva_raiz;
+            hay_input_cargado=true;
             this.idRaiz= nueva_raiz.getId();
             this.altura++;
             nueva_raiz.appendRectangulo(rect_der);
@@ -130,9 +132,14 @@ public class RTree implements Serializable{
 
     }
 
-
+    // insertar un dato
     public void insertar(IRectangulo newrec){
-        // estamos insertando un dato
+
+        /* verificamos si hay un nodo cargado en memoria, de lo contrario traemos el nodo raiz */
+        if(!hay_input_cargado){
+            System.out.println("cargando raiz\n");
+            current_node= this.u.leerNodo(idRaiz);
+        }
         if(newrec.esDato()){
             insertar_dato(newrec);
         }
@@ -157,6 +164,12 @@ public class RTree implements Serializable{
             if (!current_node.isfull()) {
                 current_node.appendRectangulo(dato);
                 System.out.println("insertando dato \n");
+                if(current_node.isfull()){
+                    System.out.println("guardando nodo");
+                    current_node.guardar();
+                    current_node=null;
+                    hay_input_cargado=false;
+                }
                 this.actualizar();
 
             } else {
@@ -171,14 +184,12 @@ public class RTree implements Serializable{
 
         // es un nodo interno, debo comparar con cada rectangulo
         else
-        {
+        {   System.out.println("el nodo no es hoja\n");
             //rectángulo que aumenta menos su MBR
 
             IRectangulo target_rec= current_node.target_rectangulo(dato, this);
 
             // envío nodo a disco, traigo nuevo nodo de disco y nodo es recolectado por gc
-
-            current_node.guardar();
             current_node= this.u.leerNodo(target_rec.getIdNodo());
             this.insertar(dato); // se repite el paso anterior pero usando un nuevo nodo de memoria
         }
@@ -189,13 +200,19 @@ public class RTree implements Serializable{
     public void insertar_MBR(IRectangulo mbr){
 
         if (!current_node.isfull()) {
-                current_node.appendRectangulo(mbr);
+            current_node.appendRectangulo(mbr);
+            if(current_node.isfull()){
+                current_node.guardar();
+                current_node=null;
+                hay_input_cargado=false;
+            }
+
                 this.actualizar();
 
-            } else {
 
-                if(this.split.equals("Linear"))this.DummySplit(mbr);
-                else this.GreeneSplit(mbr);
+        } else {
+            if(this.split.equals("Linear"))this.DummySplit(mbr);
+            else this.GreeneSplit(mbr);
 
             }
 

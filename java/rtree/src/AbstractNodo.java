@@ -13,6 +13,7 @@ public abstract class AbstractNodo implements INodo {
     // corresponde al padre de este nodo
     private IRectangulo padre = null;
     private boolean tiene_padre= false;
+    private int cantidad_rectangulos=0;
     // corresponde al rectangulo que representa el area de este nodo y su futuro padre
     private IRectangulo mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
@@ -57,6 +58,7 @@ public abstract class AbstractNodo implements INodo {
 
         rectangulos.add(++indiceUltimo, rect);
         rect.setContainer(this.id);
+        cantidad_rectangulos++;
         this.mbr.ampliar(rect);
 
     }
@@ -64,7 +66,7 @@ public abstract class AbstractNodo implements INodo {
     @Override
     public int cantidadRectangulos(){
 
-        return indiceUltimo+1;
+        return cantidad_rectangulos;
     }
 
     @Override
@@ -159,6 +161,7 @@ public abstract class AbstractNodo implements INodo {
 
     public void eliminarRectangulo( IRectangulo rec){
         this.rectangulos.remove(rec);
+        cantidad_rectangulos--;
         indiceUltimo--;
     }
     // popea el rectangulo en posicion 0 y lo elimina de la lista
