@@ -11,11 +11,11 @@ public class RTree implements Serializable{
     private int nextId= 0;
     public static final String DIR = "datos" + File.separator;
     public INodo current_node;
-    public boolean hay_input_cargado=true;
+    public boolean en_memoria_principal= true;
     // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
-    public boolean reajustar= false;
     protected NodoUtils u = new NodoUtils();
     public String split;
+    public boolean reajustar=false;
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
     public RTree(Dato rectangulo1, String split){
@@ -114,103 +114,98 @@ public class RTree implements Serializable{
             current_node= this.u.leerNodo(padre.getIdContainer());
             current_node.eliminarRectangulo(padre);
             current_node.appendRectangulo(rect_izq);
-            insertar(rect_der);
+            insertar_MBR(rect_der);
         }
 
         // se debe crear nuevo nodo interno
         else{
+            System.out.println("nodo raiz nuevo");
 
             current_node.eliminar();
             NodoInterno nueva_raiz = new NodoInterno(this.popNextId(), rect_izq);
-            current_node= nueva_raiz;
-            hay_input_cargado=true;
             this.idRaiz= nueva_raiz.getId();
             this.altura++;
             nueva_raiz.appendRectangulo(rect_der);
+            nueva_raiz.guardar();
 
         }
 
     }
 
-    // insertar un dato
-    public void insertar(IRectangulo newrec){
 
-        /* verificamos si hay un nodo cargado en memoria, de lo contrario traemos el nodo raiz */
-        if(!hay_input_cargado){
-            System.out.println("cargando raiz\n");
-            current_node= this.u.leerNodo(idRaiz);
-        }
-        if(newrec.esDato()){
-            insertar_dato(newrec);
-        }
 
-        // estamos insertando una mbr
+    public void insertar(IRectangulo new_rec){
+
+        /* los primeros M datos se insertan en memoria principal
+        sin necesidad de realizar búsquedas
+         */
+
+        if(en_memoria_principal) {
+            if (!current_node.isfull()) {
+                current_node.appendRectangulo(new_rec);
+                if (current_node.isfull()) {
+                    System.out.println("guardando primer nodo lleno");
+                    current_node.guardar();
+                    this.en_memoria_principal = false;
+                }
+            }
+        }
         else{
-            insertar_MBR(newrec);
+            current_node= this.u.leerNodo(idRaiz);
+            if(new_rec.esDato()){
+                insertar_dato(new_rec);
+            }
+
+            // estamos insertando una mbr
+            else{
+                insertar_MBR(new_rec);
+            }
+
+
         }
 
 
-        
+
     }
+
 
     /* esta funcion recibe el dato que se desea insertar y verifica si el nodo actual cargado en memoria
     * tiene espacio para almacenarlo*/
 
     public void insertar_dato(IRectangulo dato){
 
-        // es una hoja, entonces intentamos insertarlo
-        if(current_node.esHoja()) {
-            // la hoja tiene espacio
-            if (!current_node.isfull()) {
-                current_node.appendRectangulo(dato);
-                System.out.println("insertando dato \n");
-                if(current_node.isfull()){
-                    System.out.println("guardando nodo");
-                    current_node.guardar();
-                    current_node=null;
-                    hay_input_cargado=false;
-                }
-                this.actualizar();
-
-            } else {
-
-                if(this.split.equals("Linear"))this.DummySplit(dato);
-                else this.GreeneSplit(dato);
-
-            }
-
-        }
-
-
-        // es un nodo interno, debo comparar con cada rectangulo
-        else
-        {   System.out.println("el nodo no es hoja\n");
-            //rectángulo que aumenta menos su MBR
-
+        // se busca una hoja
+        while(!current_node.esHoja()){
             IRectangulo target_rec= current_node.target_rectangulo(dato, this);
-
             // envío nodo a disco, traigo nuevo nodo de disco y nodo es recolectado por gc
             current_node= this.u.leerNodo(target_rec.getIdNodo());
-            this.insertar(dato); // se repite el paso anterior pero usando un nuevo nodo de memoria
+
+        }
+        // se encuentra una hoja
+
+        if (!current_node.isfull()) {// la hoja tiene espacio
+            current_node.appendRectangulo(dato);
+            System.out.println("insertando dato en nodo " + Integer.toString(current_node.getId()) + "\n");
+            System.out.println(Integer.toString(current_node.getIndiceUltimo())+ "\n");
+
         }
 
+        // se debe realizar un split
+        else {
+            if(this.split.equals("Linear"))this.DummySplit(dato);
+            else this.GreeneSplit(dato);
+
+            }
 
     }
 
+
     public void insertar_MBR(IRectangulo mbr){
 
-        if (!current_node.isfull()) {
-            current_node.appendRectangulo(mbr);
-            if(current_node.isfull()){
-                current_node.guardar();
-                current_node=null;
-                hay_input_cargado=false;
-            }
-
-                this.actualizar();
+        if (!current_node.isfull()) current_node.appendRectangulo(mbr);
 
 
-        } else {
+        else {
             if(this.split.equals("Linear"))this.DummySplit(mbr);
             else this.GreeneSplit(mbr);
 
