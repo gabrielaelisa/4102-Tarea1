@@ -6,4 +6,8 @@ public class Dato extends AbstractRectangulo {
 
     public boolean esDato(){ return  true;}
 
+    @Override
+    public void setidNodo(int id) {
+        return;
+    }
 }

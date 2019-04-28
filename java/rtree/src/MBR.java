@@ -8,5 +8,6 @@ public class MBR extends AbstractRectangulo {
         return idNodo;
     }
 
+    public void setidNodo(int id){ this.idNodo = id;}
     public boolean esDato(){ return  false;}
 }

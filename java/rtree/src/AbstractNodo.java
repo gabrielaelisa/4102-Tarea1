@@ -10,6 +10,7 @@ public abstract class AbstractNodo implements INodo {
     //protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
     protected int m= 1000; // Cantidad minima de datos
     private int id;
+    private int cantidad_hijos=0;
     private IRectangulo padre = null;// corresponde al padre de este nodo
     private boolean tiene_padre= false;
     private IRectangulo mbr; // corresponde al rectangulo que representa el area de este nodo y su futuro padre
@@ -58,6 +59,7 @@ public abstract class AbstractNodo implements INodo {
 
         rectangulos.add(++this.indiceUltimo, rect);
         rect.setContainer(this.id);
+        cantidad_hijos+=1;
         this.mbr.ampliar(rect);
 
     }
@@ -65,12 +67,13 @@ public abstract class AbstractNodo implements INodo {
     @Override
     public int cantidadRectangulos(){
 
-        return indiceUltimo+1;
+        return cantidad_hijos;
     }
 
     @Override
     public void setPadre(IRectangulo rec){
         this.padre= rec;
+        //rec.setidNodo(this.id);
         this.tiene_padre=true;
     }
     @Override
@@ -152,15 +155,10 @@ public abstract class AbstractNodo implements INodo {
 
     }
 
-    public IRectangulo popNextRectangulo(){
-        IRectangulo rec =null;
-        //todo saca un rectangulo del arraylist y lo borra de la lista
-        return rec ;
-    }
-
     public void eliminarRectangulo( IRectangulo rec){
         this.rectangulos.remove(rec);
         indiceUltimo--;
+        cantidad_hijos-=1;
     }
     // popea el rectangulo en posicion 0 y lo elimina de la lista
     public IRectangulo popRectangulo(){

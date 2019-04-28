@@ -185,6 +185,7 @@ public class RTree implements Serializable{
 
         if (!current_node.isfull()) {// la hoja tiene espacio
             current_node.appendRectangulo(dato);
+            current_node.guardar();// mandamos la hoja a disco
             System.out.println("insertando dato en nodo " + Integer.toString(current_node.getId()) + "\n");
             System.out.println(Integer.toString(current_node.getIndiceUltimo())+ "\n");
 
@@ -202,7 +203,10 @@ public class RTree implements Serializable{
 
     public void insertar_MBR(IRectangulo mbr){
 
-        if (!current_node.isfull()) current_node.appendRectangulo(mbr);
+        if (!current_node.isfull()){
+            current_node.appendRectangulo(mbr);
+            current_node.guardar();// mandamos a disco
+        }
 
 
         else {

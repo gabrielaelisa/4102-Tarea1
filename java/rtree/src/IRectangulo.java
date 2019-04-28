@@ -27,6 +27,8 @@ public interface IRectangulo extends Serializable {
 
     void ampliar(IRectangulo rec);
 
+    void setidNodo(int id);
+
     double difArea(IRectangulo rec);
 
 }
