@@ -42,11 +42,14 @@ public class RTree implements Serializable{
         return nextId++;
     }
 
-    // recorrer el nodo desde la ultima hoja a la raiz, para recuperar invariante 1
+    /* este metodo debe recorre iterativamente
+     nodo desde la ultima hoja a la raiz, para recuperar invariante 1
+
+     */
 
     public void actualizar(){
 
-        current_node= this.u.leerNodo(idRaiz);
+        //current_node= this.u.leerNodo(idRaiz);
 
         /*if(reajustar){
 
@@ -63,7 +66,7 @@ public class RTree implements Serializable{
     // este linear split es un dummy, no usa la heurística
 
     public void DummySplit(IRectangulo rec){
-
+        System.out.println("splitting");
         INodo nodo_izq= null;
         INodo nodo_der=null;
 
@@ -103,6 +106,7 @@ public class RTree implements Serializable{
 
         // se debe actualizar el padre y agrerar rectangulos rect_izq y rect_der
         if(current_node.tienePadre()){
+            System.out.println("tiene padre\n");
             IRectangulo padre= current_node.getPadre();
             current_node.eliminar(); // se debe destrulle el archivo de current node
             //traemos al nodo padre
@@ -125,7 +129,6 @@ public class RTree implements Serializable{
         }
 
     }
-
 
 
     public void insertar(IRectangulo newrec){
@@ -153,6 +156,7 @@ public class RTree implements Serializable{
             // la hoja tiene espacio
             if (!current_node.isfull()) {
                 current_node.appendRectangulo(dato);
+                System.out.println("insertando dato \n");
                 this.actualizar();
 
             } else {
