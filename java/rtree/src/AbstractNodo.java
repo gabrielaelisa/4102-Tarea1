@@ -1,5 +1,7 @@
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.*;
 import java.util.ArrayList;
 
 
@@ -10,6 +12,7 @@ public abstract class AbstractNodo implements INodo {
     private int id;
     // corresponde al padre de este nodo
     private IRectangulo padre = null;
+    private boolean tiene_padre= false;
     // corresponde al rectangulo que representa el area de este nodo
     private IRectangulo mbr;
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
@@ -20,6 +23,7 @@ public abstract class AbstractNodo implements INodo {
         this.id= id;
         this.mbr= new MBR(-1, mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
         this.appendRectangulo(mbr);
+
     }
 
     @Override
@@ -32,6 +36,9 @@ public abstract class AbstractNodo implements INodo {
     public IRectangulo getMbr(){
         return mbr;
     }
+
+    @Override
+    public IRectangulo getPadre() {return padre;}
 
     @Override
     public IRectangulo getRectangulo(int pos){
@@ -49,6 +56,7 @@ public abstract class AbstractNodo implements INodo {
     public void appendRectangulo(IRectangulo rect){
 
         rectangulos.add(++indiceUltimo, rect);
+        rect.setContainer(this.id);
         this.mbr.ampliar(rect);
 
     }
@@ -57,6 +65,16 @@ public abstract class AbstractNodo implements INodo {
     public int cantidadRectangulos(){
 
         return indiceUltimo+1;
+    }
+
+    @Override
+    public void setPadre(IRectangulo rec){
+        this.padre= rec;
+        this.tiene_padre=true;
+    }
+    @Override
+    public boolean tienePadre(){
+        return this.tiene_padre;
     }
 
     @Override
@@ -69,6 +87,23 @@ public abstract class AbstractNodo implements INodo {
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
+        }
+    }
+
+    @Override
+    // esta funcion elimina el nodo de disco ya que va a ser reemplazado
+    public void eliminar() {
+        Path path = Paths.get(RTree.DIR + "n" + id + ".node");
+
+        try {
+            Files.delete(path);
+        } catch (NoSuchFileException x) {
+            System.err.format("%s: no such" + " file or directory%n", RTree.DIR + "n" + id + ".node");
+        } catch (DirectoryNotEmptyException x) {
+            System.err.format("%s not empty%n", RTree.DIR + "n" + id + ".node");
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            System.err.println(x);
         }
     }
 
@@ -98,12 +133,12 @@ public abstract class AbstractNodo implements INodo {
             }
             // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
             else if (rec.intersects(dato)) {
-                if (rec.interseccion(dato) < min_grow) {
+                if (rec.difArea(dato) < min_grow) {
                     target_rec = rec;
                     min_area= rec.ancho()*rec.alto();
                 }
                 // en caso de empate se baja por el MBR que tenga menor area
-                if(rec.interseccion(dato)== min_grow){
+                if(rec.difArea(dato)== min_grow){
                     if(rec.ancho()*rec.alto()<min_area) target_rec=rec;
                 }
                 // se debe recorrer el arbol de abajo hacia arriba para recuperar la invariante 1

@@ -6,6 +6,8 @@ public interface INodo extends Serializable {
 
     int getId();
 
+    IRectangulo getPadre();
+
     IRectangulo getMbr();
 
     IRectangulo getRectangulo(int pos);
@@ -16,9 +18,15 @@ public interface INodo extends Serializable {
 
     int cantidadRectangulos();
 
+    void eliminar();
+
     void guardar();
 
     boolean isfull();
+
+    public boolean tienePadre();
+
+    public void setPadre(IRectangulo rec);
 
     IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
 

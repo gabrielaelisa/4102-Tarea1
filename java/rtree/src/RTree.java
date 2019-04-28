@@ -21,8 +21,6 @@ public class RTree implements Serializable{
          siempre habra un nodo cargado en memoria */
         this.split =split;
         current_node= new NodoHoja(0,rectangulo1);
-        // agregamos el campo contenedor del nodo rectangulo
-        rectangulo1.SetContainer(current_node.getId());
         nextId++;
     }
 
@@ -46,33 +44,83 @@ public class RTree implements Serializable{
     // recorrer el nodo desde la ultima hoja a la raiz, para recuperar invariante 1
 
     public void actualizar(){
-        return;
+
+        if(reajustar){
+
+        }
+        else{
+            current_node= this.u.leerNodo(idRaiz);
+        };
     }
 
     public void GreeneSplit(IRectangulo rec){
         return;
     }
 
-    // este lienar split es un dummy, no usa la heurística
+    // este linear split es un dummy, no usa la heurística
 
-    public void LinearSplit(IRectangulo rec){
+    public void DummySplit(IRectangulo rec){
 
         INodo nodo_izq;
         INodo nodo_der;
 
         if(current_node.esHoja()){
             nodo_izq= new NodoHoja(popNextId(),rec);
-
             nodo_der=new NodoHoja(popNextId(), current_node.getRectangulo(0));
 
+            // aqui debería ir una heurística
+
+            //todo se debe implementar un metodo que quite rectangulos de current node y los agregue a nodo izq o der
+            //todo usar double dispatch
+
             for(int i=1; i< (int)current_node.cantidadRectangulos()/2 ; i++){
-                nodo_izq.appendRectangulo(current_node.getRectangulo(i));
+                nodo_izq.appendRectangulo(current_node.getRectangulo(i)); // current_node.popRectangle , para no saturar memoria
             }
             for(int i= (int)current_node.cantidadRectangulos()/2; i< current_node.cantidadRectangulos() ; i++){
                 nodo_der.appendRectangulo(current_node.getRectangulo(i));
             }
 
+            // ------------------------ terminan los ciclos ---------------------------------------------------------
+
+            IRectangulo rect_izq= nodo_izq.getMbr();
+            IRectangulo rect_der=nodo_der.getMbr();
+
+
+            // se debe actualizar el padre y agrerar rectangulos rect_izq y rect_der
+            if(current_node.tienePadre()){
+                IRectangulo padre= current_node.getPadre();
+
+            }
+            // se debe crear nuevo nodo interno
+            else{
+
+                NodoInterno nueva_raiz = new NodoInterno(this.popNextId(), rect_izq);
+                current_node= nueva_raiz;
+                nueva_raiz.appendRectangulo(rect_der);
+                this.idRaiz= nueva_raiz.getId();
+                rect_izq.updateidNodo(nodo_izq.getId());
+                rect_der.updateidNodo(nodo_der.getId());
+                //mandamos nodo_izq y derecho a disco
+                nodo_izq.guardar();
+                nodo_der.guardar();
+
+            }
+
+
+            //llamamos al gc
+            nodo_izq=null;
+            nodo_der=null;
+            // se debe destruir el archivo de current node
+            current_node.eliminar();
+            {
+
+
+            }
+            current_node= this.u.leerNodo(padre.getIdContainer());
+
         }
+
+
 
         else{
 
@@ -113,7 +161,7 @@ public class RTree implements Serializable{
 
             } else {
 
-                if(this.split.equals("Linear"))this.LinearSplit(dato);
+                if(this.split.equals("Linear"))this.DummySplit(dato);
                 else this.GreeneSplit(dato);
 
             }

@@ -11,11 +11,15 @@ public interface IRectangulo extends Serializable {
 
     int getIdNodo();
 
+    int getIdContainer();
+
+    public void updateidNodo(int newid);
+
     int ancho();
 
     int alto();
 
-    void SetContainer(int id);
+    void setContainer(int id);
 
     boolean contains2(int x, int y, int a);
 
@@ -23,10 +27,8 @@ public interface IRectangulo extends Serializable {
 
     public boolean intersects(IRectangulo rec);
 
-    int interseccion(IRectangulo rec);
-
     void ampliar(IRectangulo rec);
 
-    IRectangulo popNextRectangulo();
+    double difArea(IRectangulo rec);
 
 }
