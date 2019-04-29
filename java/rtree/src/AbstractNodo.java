@@ -73,7 +73,7 @@ public abstract class AbstractNodo implements INodo {
     @Override
     public void setPadre(IRectangulo rec){
         this.padre= rec;
-        //rec.setidNodo(this.id);
+        rec.setidNodo(this.id);
         this.tiene_padre=true;
     }
     @Override

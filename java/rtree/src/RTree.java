@@ -1,5 +1,6 @@
 import com.sun.corba.se.impl.resolver.INSURLOperationImpl;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -95,6 +96,10 @@ public class RTree implements Serializable{
 
         IRectangulo rect_izq= nodo_izq.getMbr();
         IRectangulo rect_der=nodo_der.getMbr();
+
+        /* aqui esta el error, el rectangulo contenedor de rec izq y rec der aun no ha sido insertados, por lo que no tienen
+        su contenedor correctamente seteados
+         java no tiene pass by reference*/
         nodo_izq.setPadre(rect_izq);
         nodo_der.setPadre(rect_der);
         //mandamos nodo_izq y derecho a disco
@@ -109,6 +114,8 @@ public class RTree implements Serializable{
         if(current_node.tienePadre()){
             System.out.println("tiene padre\n");
             IRectangulo padre= current_node.getPadre();
+            System.out.println("id hijo="+Integer.toString(padre.getIdNodo()));
+            System.out.println("id container="+Integer.toString(padre.getIdContainer()));
             current_node.eliminar(); // se debe destrulle el archivo de current node
             //traemos al nodo padre
             current_node= this.u.leerNodo(padre.getIdContainer());
@@ -126,6 +133,7 @@ public class RTree implements Serializable{
             this.idRaiz= nueva_raiz.getId();
             this.altura++;
             nueva_raiz.appendRectangulo(rect_der);
+           //System.out.println(Integer.toString(rect_izq.getIdContainer()));
             nueva_raiz.guardar();
 
         }
