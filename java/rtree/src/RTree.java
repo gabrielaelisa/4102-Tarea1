@@ -2,6 +2,8 @@ import com.sun.corba.se.impl.resolver.INSURLOperationImpl;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import javafx.util.Pair;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -71,6 +73,84 @@ public class RTree implements Serializable{
 
     }
 
+    //dado un nodo lleno, y un rectangulo rec, que se quiere insertar. 
+    //Aplica dummy split para dividir este nodo en un par que contiene los nodos resultantes
+    public Pair<INodo, INodo> dummySplit(INodo n, IRectangulo r){
+        INodo nodo_izq = null;
+        INodo nodo_der = null;
+
+        if(n.esHoja()){
+            nodo_izq = new NodoHoja(popNextId(), r);
+            nodo_der = new NodoHoja(popNextId(), n.popRectangulo());
+        }
+        else{
+            nodo_izq= new NodoInterno(popNextId(), r);
+            nodo_der=new NodoInterno(popNextId(), n.popRectangulo());
+        }
+        int len = n.cantidadRectangulos();
+        int i = 0;
+        while(i < len/2){
+            nodo_izq.appendRectangulo(n.popRectangulo());
+            i++;
+        }
+        while(!n.isEmpty()){
+            nodo_der.appendRectangulo(n.popRectangulo()); 
+        }
+
+        return new Pair<>(nodo_izq, nodo_der);
+    }
+
+    public Pair<INodo, INodo> linearSplit(INodo n, IRectangulo r){
+        INodo nodo_izq = null;
+        INodo nodo_der = null;
+        
+        //Eleccion de r1 y r2 que ira al nodo izq y der respectivamente
+        IRectangulo r_sup = null;
+        IRectangulo r_inf = null;
+        IRectangulo r_izq = null;
+        IRectangulo r_der = null;
+
+        for(int i = 0; i < n.cantidadRectangulos(); i++){
+            IRectangulo current = n.getRectangulo(i);
+
+            //lado superior que esta más abajo 
+            if(r_sup == null){
+                r_sup = current;
+            }
+            r_sup = r_sup.getY()+ r_sup.alto() < current.getY()+ current.alto()? r_sup : current;
+
+            //lado inferior que esta más arriba
+            if(r_inf == null){
+                r_inf = current;
+            }
+            r_inf = r_inf.getY() > current.getY()? r_inf : current;
+
+            //lado izquierdo que esta mas a la derecha
+            if(r_izq == null){
+                r_izq = current;
+            }
+            r_izq = r_izq.getX() > current.getX()? r_izq : current;
+
+            //lado derecho que esta mas a la izquierda
+            if(r_der == null){
+                r_der = current;
+            }
+            r_der = r_der.getX()+ r_der.ancho() < current.getX()+ current.ancho()? r_der : current;  
+        }
+
+        //Calculamos distancias maximas entre cada eje
+        int dif_x = r_der.getX() - (r_izq.getX() + r_izq.ancho());
+        int dif_y = r_sup.getY() - (r_inf.getY() + r_inf.alto());
+
+        //Calculamos rangos
+        //....
+        //Comparamos cual es mayor
+        //Se insertan a nodo izq y der
+        //se inserta el resto
+
+
+        return new Pair<>(nodo_izq, nodo_der);
+    }
     public void DummySplit(IRectangulo rec){
         System.out.println("splitting");
         INodo nodo_izq= null;
@@ -125,12 +205,11 @@ public class RTree implements Serializable{
 
                 System.out.println("tiene padre\n");
                 IRectangulo padre= current_node.getPadre();
-                current_node.eliminar(); // se destrulle el archivo de current node
+                current_node.eliminar(); // se debe destrulle el archivo de current node
+                /* antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM*/
                 IRectangulo rect_izq= nodo_izq.getPadre();
                 IRectangulo rect_der= nodo_der.getPadre();
-                nodo_izq.guardar();
-                nodo_der.guardar();
-                nodo_der=null;// antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM
+                nodo_der=null;
                 nodo_izq= null;
                 current_node= this.u.leerNodo(padre.getIdContainer());
                 current_node.eliminarRectangulo(padre);
@@ -147,7 +226,8 @@ public class RTree implements Serializable{
         else{
             // caso 2.1 se trata de la raiz
             if(!current_node.tienePadre()){
-                // se hace lo mismo que en 1.1
+                // se hace lo mismo que en 1.1 pero ademas debo actualizar el puntero al padre de todos los hijos
+                // se debe crear nuevo nodo interno
                 current_node.eliminar();
                 current_node= null; // lo eliminamos de memoria
                 nodo_izq.setPadre(this.idRaiz);
@@ -161,50 +241,18 @@ public class RTree implements Serializable{
                 nueva_raiz.guardar();
 
                 // parte diferente
-                int id_der= nodo_der.getId();
-                int id_izq= nodo_izq.getId();
+                int pos_der= nodo_der.getId();
+                int pos_izq= nodo_izq.getId();
                 ArrayList<Integer> hijos_der= nodo_der.indices_hijos();
                 ArrayList<Integer> hijos_izq= nodo_izq.indices_hijos();
-
-                nodo_der=null;// quitamos los nodos de memoria principal
-                nodo_izq=null;
-
-                /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
-                * el indice del nuevo archivo en que esta su padre*/
-
-                for (int i = 0; i < hijos_der.size(); i++) {
-                    current_node = this.u.leerNodo(hijos_der.get(i));
-                    current_node.setPadre(id_der);
-                }
-
-                for (int i = 0; i < hijos_izq.size(); i++) {
-                    current_node = this.u.leerNodo(hijos_izq.get(i));
-                    current_node.setPadre(id_izq);
-                }
-
-
-
-
-            }
-            // caso 2.2 es un nodo con padre
-            else{
-
-                IRectangulo padre= current_node.getPadre();
-                current_node.eliminar(); // se destrulle el archivo de current node
-                IRectangulo rect_izq= nodo_izq.getPadre();
-                IRectangulo rect_der= nodo_der.getPadre();
-
-                int id_der= nodo_der.getId();
-                int id_izq= nodo_izq.getId();
-                ArrayList<Integer> hijos_der= nodo_der.indices_hijos();
-                ArrayList<Integer> hijos_izq= nodo_izq.indices_hijos();
-
+                // quitamos los nodos de memoria principal
                 nodo_der=null;
                 nodo_izq=null;
 
                 /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
-                 * el indice del nuevo archivo en que esta su padre*/
-
+                * el indice del nuevo archivo en que esta su padre*/
+                //for int in hijo der:
+                for (int i = 0; i < hijos_der.size(); i++) {
                 for (int i = 0; i < hijos_der.size(); i++) {
                     current_node = this.u.leerNodo(hijos_der.get(i));
                     current_node.setPadre(id_der);
@@ -215,6 +263,12 @@ public class RTree implements Serializable{
                     current_node.setPadre(id_izq);
                 }
 
+
+
+
+                IRectangulo padre= current_node.getPadre();
+                int id_der= nodo_der.getId();
+                nodo_izq=null;
                 current_node= this.u.leerNodo(padre.getIdContainer());
 
                 current_node.eliminarRectangulo(padre);

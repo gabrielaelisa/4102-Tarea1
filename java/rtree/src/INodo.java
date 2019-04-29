@@ -27,6 +27,8 @@ public interface INodo extends Serializable {
 
     boolean isfull();
 
+    boolean isEmpty();
+
     public boolean tienePadre();
 
     public void setPadre(int id);
