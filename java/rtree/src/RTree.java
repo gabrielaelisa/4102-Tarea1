@@ -125,11 +125,12 @@ public class RTree implements Serializable{
 
                 System.out.println("tiene padre\n");
                 IRectangulo padre= current_node.getPadre();
-                current_node.eliminar(); // se debe destrulle el archivo de current node
-                /* antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM*/
+                current_node.eliminar(); // se destrulle el archivo de current node
                 IRectangulo rect_izq= nodo_izq.getPadre();
                 IRectangulo rect_der= nodo_der.getPadre();
-                nodo_der=null;
+                nodo_izq.guardar();
+                nodo_der.guardar();
+                nodo_der=null;// antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM
                 nodo_izq= null;
                 current_node= this.u.leerNodo(padre.getIdContainer());
                 current_node.eliminarRectangulo(padre);
@@ -146,8 +147,7 @@ public class RTree implements Serializable{
         else{
             // caso 2.1 se trata de la raiz
             if(!current_node.tienePadre()){
-                // se hace lo mismo que en 1.1 pero ademas debo actualizar el puntero al padre de todos los hijos
-                // se debe crear nuevo nodo interno
+                // se hace lo mismo que en 1.1
                 current_node.eliminar();
                 current_node= null; // lo eliminamos de memoria
                 nodo_izq.setPadre(this.idRaiz);
@@ -161,16 +161,26 @@ public class RTree implements Serializable{
                 nueva_raiz.guardar();
 
                 // parte diferente
-                int pos_der= nodo_der.getId();
-                int pos_izq= nodo_izq.getId();
+                int id_der= nodo_der.getId();
+                int id_izq= nodo_izq.getId();
                 ArrayList<Integer> hijos_der= nodo_der.indices_hijos();
                 ArrayList<Integer> hijos_izq= nodo_izq.indices_hijos();
-                // quitamos los nodos de memoria principal
-                nodo_der=null;
+
+                nodo_der=null;// quitamos los nodos de memoria principal
                 nodo_izq=null;
+
                 /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
                 * el indice del nuevo archivo en que esta su padre*/
-                //for int in hijo der:
+
+                for (int i = 0; i < hijos_der.size(); i++) {
+                    current_node = this.u.leerNodo(hijos_der.get(i));
+                    current_node.setPadre(id_der);
+                }
+
+                for (int i = 0; i < hijos_izq.size(); i++) {
+                    current_node = this.u.leerNodo(hijos_izq.get(i));
+                    current_node.setPadre(id_izq);
+                }
 
 
 
@@ -178,6 +188,40 @@ public class RTree implements Serializable{
             }
             // caso 2.2 es un nodo con padre
             else{
+
+                IRectangulo padre= current_node.getPadre();
+                current_node.eliminar(); // se destrulle el archivo de current node
+                IRectangulo rect_izq= nodo_izq.getPadre();
+                IRectangulo rect_der= nodo_der.getPadre();
+
+                int id_der= nodo_der.getId();
+                int id_izq= nodo_izq.getId();
+                ArrayList<Integer> hijos_der= nodo_der.indices_hijos();
+                ArrayList<Integer> hijos_izq= nodo_izq.indices_hijos();
+
+                nodo_der=null;
+                nodo_izq=null;
+
+                /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
+                 * el indice del nuevo archivo en que esta su padre*/
+
+                for (int i = 0; i < hijos_der.size(); i++) {
+                    current_node = this.u.leerNodo(hijos_der.get(i));
+                    current_node.setPadre(id_der);
+                }
+
+                for (int i = 0; i < hijos_izq.size(); i++) {
+                    current_node = this.u.leerNodo(hijos_izq.get(i));
+                    current_node.setPadre(id_izq);
+                }
+
+                current_node= this.u.leerNodo(padre.getIdContainer());
+
+                current_node.eliminarRectangulo(padre);
+                current_node.appendRectangulo(rect_izq);
+                insertar_MBR(rect_der);
+
+
 
             }
         }
