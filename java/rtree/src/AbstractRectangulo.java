@@ -37,11 +37,6 @@ public abstract class AbstractRectangulo implements IRectangulo {
     }
 
     @Override
-    public int getIdNodo() {
-        return idNodo;
-    }
-
-    @Override
     public int ancho() {
         return ancho;
     }

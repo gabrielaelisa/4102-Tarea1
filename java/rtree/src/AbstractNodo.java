@@ -11,16 +11,15 @@ public abstract class AbstractNodo implements INodo {
     protected int m= 1000; // Cantidad minima de datos
     private int id;
     private int cantidad_hijos=0;
-    private IRectangulo padre = null;// corresponde al padre de este nodo
     private boolean tiene_padre= false;
-    private IRectangulo mbr; // corresponde al rectangulo que representa el area de este nodo y su futuro padre
+    public IRectangulo padre; // corresponde al rectangulo que representa el area de este nodo y su futuro padre
     protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
     protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
 
 
     protected AbstractNodo(int id, IRectangulo mbr){
         this.id= id;
-        this.mbr= new MBR(id, mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
+        this.padre= new MBR(id, mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
         this.appendRectangulo(mbr);
 
     }
@@ -34,10 +33,6 @@ public abstract class AbstractNodo implements INodo {
         return indiceUltimo;
     }
 
-    @Override
-    public IRectangulo getMbr(){
-        return mbr;
-    }
 
     @Override
     public IRectangulo getPadre() {return padre;}
@@ -55,12 +50,18 @@ public abstract class AbstractNodo implements INodo {
     }
 
     @Override
+    public void setPadre(int id){
+        this.tiene_padre=true;
+        this.padre.setContainer(id);
+    }
+
+    @Override
     public void appendRectangulo(IRectangulo rect){
 
         rectangulos.add(++this.indiceUltimo, rect);
         rect.setContainer(this.id);
         cantidad_hijos+=1;
-        this.mbr.ampliar(rect);
+        this.padre.ampliar(rect);
 
     }
 
@@ -70,15 +71,22 @@ public abstract class AbstractNodo implements INodo {
         return cantidad_hijos;
     }
 
-    @Override
-    public void setPadre(IRectangulo rec){
-        this.padre= rec;
-        rec.setidNodo(this.id);
-        this.tiene_padre=true;
-    }
+
     @Override
     public boolean tienePadre(){
         return this.tiene_padre;
+    }
+
+    @Override
+    // esta funcion retorna la lista de los indices de los archivos al cual apunta el Nodo
+    public ArrayList<Integer> indices_hijos(){
+        ArrayList<Integer> indices= new ArrayList<Integer>();
+        for(int i= 0; i<this.indiceUltimo; i++){
+            IRectangulo rec= getRectangulo(i);
+            indices.add(rec.getId());
+        }
+        return indices;
+
     }
 
     @Override

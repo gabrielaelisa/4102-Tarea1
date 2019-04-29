@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public interface INodo extends Serializable {
 
@@ -7,8 +8,6 @@ public interface INodo extends Serializable {
     int getId();
 
     IRectangulo getPadre();
-
-    IRectangulo getMbr();
 
     IRectangulo getRectangulo(int pos);
 
@@ -20,6 +19,8 @@ public interface INodo extends Serializable {
 
     int cantidadRectangulos();
 
+    public ArrayList<Integer> indices_hijos();
+
     void eliminar();
 
     void guardar();
@@ -28,7 +29,7 @@ public interface INodo extends Serializable {
 
     public boolean tienePadre();
 
-    public void setPadre(IRectangulo rec);
+    public void setPadre(int id);
 
     IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
 

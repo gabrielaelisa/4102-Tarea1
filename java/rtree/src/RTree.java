@@ -67,6 +67,10 @@ public class RTree implements Serializable{
 
     // este linear split es un dummy, no usa la heurística
 
+    public void heurística(INodo split, INodo izq, INodo der){
+
+    }
+
     public void DummySplit(IRectangulo rec){
         System.out.println("splitting");
         INodo nodo_izq= null;
@@ -92,51 +96,92 @@ public class RTree implements Serializable{
             nodo_der.appendRectangulo(current_node.popRectangulo());
         }
 
+
         // ------------------------ terminan los ciclos ---------------------------------------------------------
 
-        IRectangulo rect_izq= nodo_izq.getMbr();
-        IRectangulo rect_der=nodo_der.getMbr();
 
-        /* aqui esta el error, el rectangulo contenedor de rec izq y rec der aun no ha sido insertados, por lo que no tienen
-        su contenedor correctamente seteados
-         java no tiene pass by reference*/
-        nodo_izq.setPadre(rect_izq);
-        nodo_der.setPadre(rect_der);
-        //mandamos nodo_izq y derecho a disco
-        nodo_izq.guardar();
-        nodo_der.guardar();
-        //garbage collection
-        nodo_izq=null;
-        nodo_der=null;
+        // caso 1:  el nodo al que se le hace split es una hoja
+        if(current_node.esHoja()){
+
+            //caso 1.1 se trata de la raiz
+            if (!current_node.tienePadre()){
+                // se debe crear nuevo nodo interno
+                current_node.eliminar();
+                current_node= null; // lo eliminamos de memoria
+                nodo_izq.setPadre(this.idRaiz);
+                nodo_der.setPadre(this.idRaiz);
+
+                NodoInterno nueva_raiz = new NodoInterno(this.idRaiz, nodo_izq.getPadre()); // usamos el mismo id del nodo anterior
+                nueva_raiz.appendRectangulo(nodo_der.getPadre());
+                this.altura++;
+
+                nodo_izq.guardar();
+                nodo_der.guardar();
+                nueva_raiz.guardar();
+            }
+
+            // caso 1.2  es un nodo con padre
+            else{
+
+                System.out.println("tiene padre\n");
+                IRectangulo padre= current_node.getPadre();
+                current_node.eliminar(); // se debe destrulle el archivo de current node
+                /* antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM*/
+                IRectangulo rect_izq= nodo_izq.getPadre();
+                IRectangulo rect_der= nodo_der.getPadre();
+                nodo_der=null;
+                nodo_izq= null;
+                current_node= this.u.leerNodo(padre.getIdContainer());
+                current_node.eliminarRectangulo(padre);
+                current_node.appendRectangulo(rect_izq);
+                insertar_MBR(rect_der);
 
 
-        // se debe actualizar el padre y agrerar rectangulos rect_izq y rect_der
-        if(current_node.tienePadre()){
-            System.out.println("tiene padre\n");
-            IRectangulo padre= current_node.getPadre();
-            System.out.println("id hijo="+Integer.toString(padre.getIdNodo()));
-            System.out.println("id container="+Integer.toString(padre.getIdContainer()));
-            current_node.eliminar(); // se debe destrulle el archivo de current node
-            //traemos al nodo padre
-            current_node= this.u.leerNodo(padre.getIdContainer());
-            current_node.eliminarRectangulo(padre);
-            current_node.appendRectangulo(rect_izq);
-            insertar_MBR(rect_der);
+            }
+
         }
 
-        // se debe crear nuevo nodo interno
+
+        // caso 2: el nodo es nodo interno
         else{
-            System.out.println("nodo raiz nuevo");
+            // caso 2.1 se trata de la raiz
+            if(!current_node.tienePadre()){
+                // se hace lo mismo que en 1.1 pero ademas debo actualizar el puntero al padre de todos los hijos
+                // se debe crear nuevo nodo interno
+                current_node.eliminar();
+                current_node= null; // lo eliminamos de memoria
+                nodo_izq.setPadre(this.idRaiz);
+                nodo_der.setPadre(this.idRaiz);
 
-            current_node.eliminar();
-            NodoInterno nueva_raiz = new NodoInterno(this.popNextId(), rect_izq);
-            this.idRaiz= nueva_raiz.getId();
-            this.altura++;
-            nueva_raiz.appendRectangulo(rect_der);
-           //System.out.println(Integer.toString(rect_izq.getIdContainer()));
-            nueva_raiz.guardar();
+                NodoInterno nueva_raiz = new NodoInterno(this.idRaiz, nodo_izq.getPadre()); // usamos el mismo id del nodo anterior
+                nueva_raiz.appendRectangulo(nodo_der.getPadre());
+                this.altura++;
+                nodo_izq.guardar();
+                nodo_der.guardar();
+                nueva_raiz.guardar();
 
+                // parte diferente
+                int pos_der= nodo_der.getId();
+                int pos_izq= nodo_izq.getId();
+                ArrayList<Integer> hijos_der= nodo_der.indices_hijos();
+                ArrayList<Integer> hijos_izq= nodo_izq.indices_hijos();
+                // quitamos los nodos de memoria principal
+                nodo_der=null;
+                nodo_izq=null;
+                /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
+                * el indice del nuevo archivo en que esta su padre*/
+                //for int in hijo der:
+
+
+
+
+            }
+            // caso 2.2 es un nodo con padre
+            else{
+
+            }
         }
+
 
     }
 
@@ -186,7 +231,7 @@ public class RTree implements Serializable{
         while(!current_node.esHoja()){
             IRectangulo target_rec= current_node.target_rectangulo(dato, this);
             // envío nodo a disco, traigo nuevo nodo de disco y nodo es recolectado por gc
-            current_node= this.u.leerNodo(target_rec.getIdNodo());
+            current_node= this.u.leerNodo(target_rec.getId());
 
         }
         // se encuentra una hoja
