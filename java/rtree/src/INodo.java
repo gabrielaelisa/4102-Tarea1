@@ -33,8 +33,6 @@ public interface INodo extends Serializable {
 
     public void setPadre(int id);
 
-    IRectangulo target_rectangulo(IRectangulo rec, RTree tree);
-
     void eliminarRectangulo( IRectangulo rec);
 
     public IRectangulo popRectangulo();

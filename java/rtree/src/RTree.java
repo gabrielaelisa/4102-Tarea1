@@ -82,13 +82,14 @@ public class RTree implements Serializable{
         INodo nodo_der = null;
 
         if(n.esHoja()){
-            nodo_izq = new NodoHoja(popNextId(), r);
-            nodo_der = new NodoHoja(popNextId(), n.popRectangulo());
+            nodo_izq= new NodoHoja(n.getId(), r);
+            nodo_der= new NodoHoja(popNextId(), n.popRectangulo());
+        }else{
+            nodo_izq= new NodoInterno(n.getId(), r);
+            nodo_der= new NodoInterno(popNextId(), n.popRectangulo());
         }
-        else{
-            nodo_izq= new NodoInterno(popNextId(), r);
-            nodo_der=new NodoInterno(popNextId(), n.popRectangulo());
-        }
+
+
         int len = n.cantidadRectangulos();
         int i = 0;
         while(i < len/2){
@@ -206,219 +207,7 @@ public class RTree implements Serializable{
 
         return new Pair<>(nodo_izq, nodo_der);
     }
-    public void DummySplit(IRectangulo rec) {
-        System.out.println("splitting");
-        INodo nodo_izq = null;
-        INodo nodo_der = null;
 
-        if (current_node.esHoja()) {
-            nodo_izq = new NodoHoja(popNextId(), rec);
-            nodo_der = new NodoHoja(popNextId(), current_node.popRectangulo());
-        } else {
-            nodo_izq = new NodoInterno(popNextId(), rec);
-            nodo_der = new NodoInterno(popNextId(), current_node.popRectangulo());
-
-        }
-
-        //-------------------------- aqui debería ir una heurística-------------------------------------------
-
-        int len = new Integer(current_node.cantidadRectangulos());
-        for (int i = 0; i < (int) len / 2; i++) {
-            nodo_izq.appendRectangulo(current_node.popRectangulo());
-        }
-        for (int i = len / 2; i < len; i++) {
-            nodo_der.appendRectangulo(current_node.popRectangulo());
-        }
-
-
-        // ------------------------ terminan los ciclos ---------------------------------------------------------
-
-
-        // caso 1:  el nodo al que se le hace split es una hoja
-        if (current_node.esHoja()) {
-
-            //caso 1.1 se trata de la raiz
-            if (!current_node.tienePadre()) {
-                // se debe crear nuevo nodo interno
-                current_node.eliminar();
-                current_node = null; // lo eliminamos de memoria
-                nodo_izq.setPadre(this.idRaiz);
-                nodo_der.setPadre(this.idRaiz);
-
-                NodoInterno nueva_raiz = new NodoInterno(this.idRaiz, nodo_izq.getPadre()); // usamos el mismo id del nodo anterior
-                nueva_raiz.appendRectangulo(nodo_der.getPadre());
-                this.altura++;
-
-                nodo_izq.guardar();
-                nodo_der.guardar();
-                nueva_raiz.guardar();
-            }
-
-            // caso 1.2  es un nodo con padre
-            else {
-
-                System.out.println("tiene padre\n");
-                IRectangulo padre = current_node.getPadre();
-                current_node.eliminar(); // se debe destrulle el archivo de current node
-                /* antes de traer el nodo padre a memoria principal debo dejar de tener a los hijos en RAM*/
-                IRectangulo rect_izq = nodo_izq.getPadre();
-                IRectangulo rect_der = nodo_der.getPadre();
-                nodo_der = null;
-                nodo_izq = null;
-                current_node = this.u.leerNodo(padre.getIdContainer());
-                current_node.eliminarRectangulo(padre);
-                current_node.appendRectangulo(rect_izq);
-                insertar_MBR(rect_der);
-
-
-            }
-
-        }
-
-
-        // caso 2: el nodo es nodo interno
-        else {
-            // caso 2.1 se trata de la raiz
-            if (!current_node.tienePadre()) {
-                // se hace lo mismo que en 1.1 pero ademas debo actualizar el puntero al padre de todos los hijos
-                // se debe crear nuevo nodo interno
-                current_node.eliminar();
-                current_node = null; // lo eliminamos de memoria
-                nodo_izq.setPadre(this.idRaiz);
-                nodo_der.setPadre(this.idRaiz);
-
-                NodoInterno nueva_raiz = new NodoInterno(this.idRaiz, nodo_izq.getPadre()); // usamos el mismo id del nodo anterior
-                nueva_raiz.appendRectangulo(nodo_der.getPadre());
-                this.altura++;
-                nodo_izq.guardar();
-                nodo_der.guardar();
-                nueva_raiz.guardar();
-
-                // parte diferente
-                int pos_der = nodo_der.getId();
-                int pos_izq = nodo_izq.getId();
-                ArrayList<Integer> hijos_der = nodo_der.indices_hijos();
-                ArrayList<Integer> hijos_izq = nodo_izq.indices_hijos();
-                // quitamos los nodos de memoria principal
-                nodo_der = null;
-                nodo_izq = null;
-
-                /* debemos actualizar el puntero al padre de cada uno de los hijos. esto para indicarle
-                 * el indice del nuevo archivo en que esta su padre*/
-                //for int in hijo der:
-                for (int i = 0; i < hijos_der.size(); i++) {
-                    for (int i = 0; i < hijos_der.size(); i++) {
-                        current_node = this.u.leerNodo(hijos_der.get(i));
-                        current_node.setPadre(id_der);
-                    }
-
-                    for (int i = 0; i < hijos_izq.size(); i++) {
-                        current_node = this.u.leerNodo(hijos_izq.get(i));
-                        current_node.setPadre(id_izq);
-                    }
-
-
-                    IRectangulo padre = current_node.getPadre();
-                    int id_der = nodo_der.getId();
-                    nodo_izq = null;
-                    current_node = this.u.leerNodo(padre.getIdContainer());
-
-                    current_node.eliminarRectangulo(padre);
-                    current_node.appendRectangulo(rect_izq);
-                    insertar_MBR(rect_der);
-
-
-                }
-            }
-
-
-        }
-    }
-
-
-
-    public void insertar(IRectangulo new_rec){
-
-        /* los primeros M datos se insertan en memoria principal
-        sin necesidad de realizar búsquedas
-         */
-
-        if(en_memoria_principal) {
-            if (!current_node.isfull()) {
-                current_node.appendRectangulo(new_rec);
-                if (current_node.isfull()) {
-                    System.out.println("guardando primer nodo lleno");
-                    current_node.guardar();
-                    this.en_memoria_principal = false;
-                }
-            }
-        }
-        else{
-            current_node= this.u.leerNodo(idRaiz);
-            if(new_rec.esDato()){
-                insertar_dato(new_rec);
-            }
-
-            // estamos insertando una mbr
-            else{
-                insertar_MBR(new_rec);
-            }
-
-
-        }
-
-
-
-    }
-
-
-    /* esta funcion recibe el dato que se desea insertar y verifica si el nodo actual cargado en memoria
-    * tiene espacio para almacenarlo*/
-
-    public void insertar_dato(IRectangulo dato){
-
-        // se busca una hoja
-        while(!current_node.esHoja()){
-            IRectangulo target_rec= current_node.target_rectangulo(dato, this);
-            // envío nodo a disco, traigo nuevo nodo de disco y nodo es recolectado por gc
-            current_node= this.u.leerNodo(target_rec.getId());
-
-        }
-        // se encuentra una hoja
-
-        if (!current_node.isfull()) {// la hoja tiene espacio
-            current_node.appendRectangulo(dato);
-            current_node.guardar();// mandamos la hoja a disco
-            System.out.println("insertando dato en nodo " + Integer.toString(current_node.getId()) + "\n");
-            System.out.println(Integer.toString(current_node.getIndiceUltimo())+ "\n");
-
-        }
-
-        // se debe realizar un split
-        else {
-            if(this.split.equals("Linear"))this.DummySplit(dato);
-            else this.GreeneSplit(dato);
-
-            }
-
-    }
-
-
-    public void insertar_MBR(IRectangulo mbr){
-
-        if (!current_node.isfull()){
-            current_node.appendRectangulo(mbr);
-            current_node.guardar();// mandamos a disco
-        }
-
-
-        else {
-            if(this.split.equals("Linear"))this.DummySplit(mbr);
-            else this.GreeneSplit(mbr);
-
-            }
-
-        }
 
     private class InfoNodo{
         public int id;
@@ -436,11 +225,31 @@ public class RTree implements Serializable{
     }
 
     public void insertarDato(Dato dato){
-        //Inserta dato utilizando DFS:
-        // TODO Implementar optimizacion para insercion cuando hay una sola hoja
+        // Si hay solo una hoja (que es a la vez la raiz) la mantenemos en memoria hasta que se llene.
+        if(en_memoria_principal){
+            if(current_node.isfull()){
+                // Overflow, hay que generar una nueva raiz
+                Pair<INodo, INodo> parNodos = dummySplit(current_node, dato);
+                parNodos.getValue().guardar();
+                parNodos.getKey().guardar();
+                MBR nuevoMbr1= (MBR) parNodos.getKey().getPadre();
+                MBR nuevoMbr2= (MBR) parNodos.getValue().getPadre();
+                NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1);
+                this.setIdRaiz(nuevaRaiz.getId());
+                nuevaRaiz.appendRectangulo(nuevoMbr2);
+                nuevaRaiz.guardar();
+                current_node= null;
+                en_memoria_principal= false;
+                return;
+            }
+            current_node.appendRectangulo(dato);
+            return;
+        }
+
+        //No esta en memoria principal, insertamos dato utilizando DFS:
         Stack<InfoNodo> pila= new Stack<>();
         boolean ampliar = false; // true si se deben ampliar los mbr al regresar hacia la raiz
-        MBR mbrAmpliado= null; // El mbr que se debe buscar y reemplazar
+        MBR mbrAmpliado= null; // El mbr que se debe buscar y reemplazar al regresar hacia la raiz
         boolean overflow = false; // true si se debe manejar overflow al regresar hacia la raiz
         MBR mbrBorrar= null, nuevoMbr1=null, nuevoMbr2= null ; // MBRs para manejar el overflow al regresar hacia la raiz
         pila.push(new InfoNodo(idRaiz, false)); // Comenzamos con el nodo raiz
@@ -449,26 +258,65 @@ public class RTree implements Serializable{
             if(infoActual.visitado){
                 // Si llegamos aqui es porque hubo overflow o ampliacion y
                 // estamos en un nodo interno.
-                // TODO ver casos para la raiz (getPadre() retorna null).
                 NodoInterno actual = (NodoInterno) NodoUtils.leerNodo(infoActual.id);
                 if(ampliar){
-                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); //TODO Ver caso si es null
+                    if(actual.getId() == this.idRaiz){
+                        // Estamos en la raiz, no hay que ampliar, solo reemplazar.
+                        actual.replaceMRB(mbrAmpliado);
+                        actual.guardar();
+                        return;
+                    }
+                    // Estamos en un nodo interno que no es la raiz.
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos para comparar luego
                     actual.replaceMRB(mbrAmpliado);
                     actual.getPadre().ampliar(mbrAmpliado);
                     MBR nuevoMBR= (MBR) actual.getPadre();
+                    actual.guardar();
                     if(mbrNodo.equals(nuevoMBR))
                         return; // No hubo ampliacion al agregar el MBR ampliado
                     mbrAmpliado= nuevoMBR;
                     // Seguimos ampliando hacia la raiz
                 }else if(overflow){
                     // Puede haber otro overflow o ampliacion
-                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); //TODO Ver caso si es null
+                    if(actual.getId() == this.idRaiz){
+                        //Estamos en la raiz, hay que crear un nuevo nodo raiz si es que esta llena.
+                        actual.eliminarRectangulo(mbrBorrar);
+                        actual.appendRectangulo(nuevoMbr1);
+                        if(actual.isfull()){
+                            // Creamos un nuevo nodo raiz
+                            Pair<INodo, INodo> parNodos = dummySplit(actual, nuevoMbr2);
+                            parNodos.getValue().guardar();
+                            parNodos.getKey().guardar();
+                            nuevoMbr1= (MBR) parNodos.getKey().getPadre();
+                            nuevoMbr2= (MBR) parNodos.getValue().getPadre();
+                            NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1);
+                            this.setIdRaiz(nuevaRaiz.getId());
+                            nuevaRaiz.appendRectangulo(nuevoMbr2);
+                            nuevaRaiz.guardar();
+                            return;
+                        }
+                        // No esta llena, insertamos y retornamos.
+                        actual.eliminarRectangulo(mbrBorrar);
+                        actual.appendRectangulo(nuevoMbr1);
+                        actual.appendRectangulo(nuevoMbr2);
+                        actual.guardar();
+                        return;
+                    }
+                    // Estamos en un nodo interno que no es la raiz.
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos para comparar por ampliacion
                     actual.eliminarRectangulo(mbrBorrar);
                     actual.appendRectangulo(nuevoMbr1);
                     if(actual.isfull()){
-                        // Nuevo overflow
-                        //TODO Terminar caso nuevo overflow
+                        // Nuevo overflow.
+                        mbrBorrar= new MBR((MBR) actual.getPadre());
+                        Pair<INodo, INodo> parNodos = dummySplit(actual, nuevoMbr2);
+                        parNodos.getKey().guardar();
+                        parNodos.getValue().guardar();
+                        nuevoMbr1= (MBR) parNodos.getKey().getPadre();
+                        nuevoMbr2= (MBR) parNodos.getValue().getPadre();
+                        // Se continua manejando el overflow hacia la raiz.
                     }else{
+                        // Ya no hay overflow pero puede que haya que ampliar.
                         actual.appendRectangulo(nuevoMbr2);
                         MBR nuevoMBR= (MBR) actual.getPadre();
                         if(!mbrNodo.equals(nuevoMBR)){
@@ -477,20 +325,22 @@ public class RTree implements Serializable{
                             ampliar= true;
                             mbrAmpliado= nuevoMBR;
                         }
+                        actual.guardar();
                     }
                 }
-                pila.pop();
-                continue;
+                pila.pop(); // Se quita el nodo actual de la pila
+                continue; // Continuamos manejando overflow o ampliacion hacia la raiz
             }
             infoActual.visitado= true;
             INodo actual= NodoUtils.leerNodo(infoActual.id);
             if(actual.esHoja()){
                 // Insertar y si no hay Overflow ni hay que ampliar retornamos.
 
-                if (!actual.isfull()) {// la hoja tiene espacio
-                    MBR mbrNodo= new MBR((MBR) actual.getPadre());
+                if (!actual.isfull()) {// La hoja tiene espacio
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos el mbr padre para ver si hubo ampliacion
                     actual.appendRectangulo(dato);
                     MBR nuevoMBR= (MBR) actual.getPadre();
+                    actual.guardar();
                     if(!mbrNodo.equals(nuevoMBR)){
                         // Se amplio el mbr del nodo, por lo que puede que
                         // se deba ampliar el mbr de arriba.
@@ -505,7 +355,7 @@ public class RTree implements Serializable{
                 // El nodo esta lleno, hay overflow.
                 overflow= true;
                 mbrBorrar= new MBR((MBR) actual.getPadre());
-                Pair<INodo, INodo> parNodos = heuristicaDummy(actual, dato);
+                Pair<INodo, INodo> parNodos = dummySplit(actual, dato);
                 parNodos.getKey().guardar();
                 parNodos.getValue().guardar();
                 nuevoMbr1= (MBR) parNodos.getKey().getPadre();
@@ -514,12 +364,11 @@ public class RTree implements Serializable{
                 continue;
             }
             // El nodo actual no es una hoja
-            // TODO Revisar target_rectangulo
-            MBR rectDescenso= (MBR) actual.target_rectangulo(dato, this);
+            MBR rectDescenso= ((NodoInterno)actual).target_rectangulo(dato, this);
             pila.push(new InfoNodo(rectDescenso.getId(), false));
 
         }// Fin while
-    }
+    }// Fin metodo
 
 }
 

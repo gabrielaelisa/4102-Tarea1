@@ -5,7 +5,6 @@ public abstract class AbstractRectangulo implements IRectangulo {
     private int ancho;
     private int alto;
     protected int idNodo; // id del Nodo al que apunta
-    protected int idContainer; // id del Nodo en el que esta contenido
 
     // x e y son esquina inferior izquierda
     protected AbstractRectangulo(int idNodo, int x, int y, int ancho, int alto) {
@@ -16,9 +15,6 @@ public abstract class AbstractRectangulo implements IRectangulo {
         this.alto = alto;
     }
 
-    public void setContainer(int id){
-        this.idContainer= id;
-    }
 
 
     @Override
@@ -45,12 +41,7 @@ public abstract class AbstractRectangulo implements IRectangulo {
     public int alto() {
         return alto;
     }
-
-    @Override
-    public int getIdContainer(){
-        return idContainer;
-    }
-
+    
 
     //Verifica si x esta contenido en el intervalo [y, y+a]
     public boolean contains2(int x, int y, int a) {

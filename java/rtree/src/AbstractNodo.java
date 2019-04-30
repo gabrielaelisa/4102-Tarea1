@@ -52,17 +52,13 @@ public abstract class AbstractNodo implements INodo {
     @Override
     public void setPadre(int id){
         this.tiene_padre=true;
-        this.padre.setContainer(id);
     }
 
     @Override
     public void appendRectangulo(IRectangulo rect){
-
         rectangulos.add(++this.indiceUltimo, rect);
-        rect.setContainer(this.id);
         cantidad_hijos+=1;
         this.padre.ampliar(rect);
-
     }
 
     @Override
@@ -130,43 +126,7 @@ public abstract class AbstractNodo implements INodo {
     }
 
 
-    @Override
-    /* esta funcion retorna el rectangulo por el cual debo descender en el caso de que quiera
-     insertar un dato*/
-    public IRectangulo target_rectangulo(IRectangulo dato, RTree tree){
 
-        IRectangulo target_rec= null;
-        int min_grow= Integer.MAX_VALUE;
-        int min_area= Integer.MAX_VALUE;
-
-        for (int x=0; x<this.cantidadRectangulos(); x++) {
-
-            IRectangulo rec = this.getRectangulo(x);
-            //este caso es facil, solo debo descender
-            if (rec.contains(dato)) {
-                target_rec = rec;
-                break;
-
-            }
-            // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-            else if (rec.intersects(dato)) {
-                if (rec.difArea(dato) < min_grow) {
-                    target_rec = rec;
-                    min_area= rec.ancho()*rec.alto();
-                }
-                // en caso de empate se baja por el MBR que tenga menor area
-                if(rec.difArea(dato)== min_grow){
-                    if(rec.ancho()*rec.alto()<min_area) target_rec=rec;
-                }
-                // se debe recorrer el arbol de abajo hacia arriba para recuperar la invariante 1
-                tree.reajustar= true;
-            }
-
-        }
-        return target_rec;
-
-
-    }
 
     public void eliminarRectangulo( IRectangulo rec){
         this.rectangulos.remove(rec);
@@ -176,7 +136,9 @@ public abstract class AbstractNodo implements INodo {
     // popea el rectangulo en posicion 0 y lo elimina de la lista
     public IRectangulo popRectangulo(){
         IRectangulo rec =getRectangulo(0);
-        eliminarRectangulo(rec);
+        this.rectangulos.remove(0);
+        indiceUltimo--;
+        cantidad_hijos-=1;
         return rec;
     }
 
