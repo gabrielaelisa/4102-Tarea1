@@ -124,6 +124,11 @@ public abstract class AbstractNodo implements INodo {
         return cantidadRectangulos()>= M;
     }
 
+    @Override
+    public boolean isEmpty(){
+        return cantidadRectangulos() == 0;
+    }
+
 
     @Override
     /* esta funcion retorna el rectangulo por el cual debo descender en el caso de que quiera

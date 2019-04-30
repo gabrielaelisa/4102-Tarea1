@@ -22,7 +22,7 @@ public interface IRectangulo extends Serializable {
 
     boolean contains(IRectangulo rec);
 
-    public boolean intersects(IRectangulo rec);
+    boolean intersects(IRectangulo rec);
 
     void ampliar(IRectangulo rec);
 
