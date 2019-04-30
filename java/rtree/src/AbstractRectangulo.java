@@ -145,7 +145,17 @@ public abstract class AbstractRectangulo implements IRectangulo {
         replica= null;
         return area;
 
+    }
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof AbstractRectangulo){
+            AbstractRectangulo rec= (AbstractRectangulo) obj;
+            return this.idNodo == rec.idNodo && this.x == rec.x && this.y == rec.y &&
+                    this.ancho == rec.ancho && this.alto == rec.alto;
+        }
+        return false;
     }
 
 }

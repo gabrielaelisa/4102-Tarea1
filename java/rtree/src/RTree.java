@@ -1,9 +1,11 @@
 import com.sun.corba.se.impl.resolver.INSURLOperationImpl;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import javafx.util.Pair;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class RTree implements Serializable{
 
@@ -314,9 +316,108 @@ public class RTree implements Serializable{
 
         }
 
+    private class InfoNodo{
+        public int id;
+        public boolean visitado;
 
-
+        InfoNodo(int id, boolean visitado){
+            this.id= id;
+            this.visitado= visitado;
+        }
     }
+
+    public Pair<INodo, INodo> heuristicaDummy(INodo n, IRectangulo rec){
+        // TODO Reemplazar por las heuristicas implementadas
+        return new Pair<>(null, null);
+    }
+
+    public void insertarDato(Dato dato){
+        //Inserta dato utilizando DFS:
+        // TODO Implementar optimizacion para insercion cuando hay una sola hoja
+        Stack<InfoNodo> pila= new Stack<>();
+        boolean ampliar = false; // true si se deben ampliar los mbr al regresar hacia la raiz
+        MBR mbrAmpliado= null; // El mbr que se debe buscar y reemplazar
+        boolean overflow = false; // true si se debe manejar overflow al regresar hacia la raiz
+        MBR mbrBorrar= null, nuevoMbr1=null, nuevoMbr2= null ; // MBRs para manejar el overflow al regresar hacia la raiz
+        pila.push(new InfoNodo(idRaiz, false)); // Comenzamos con el nodo raiz
+        while(pila.size()!=0){
+            InfoNodo infoActual= pila.peek(); // Obtenemos primera componenete (id) del par en la pila
+            if(infoActual.visitado){
+                // Si llegamos aqui es porque hubo overflow o ampliacion y
+                // estamos en un nodo interno.
+                // TODO ver casos para la raiz (getPadre() retorna null).
+                NodoInterno actual = (NodoInterno) NodoUtils.leerNodo(infoActual.id);
+                if(ampliar){
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); //TODO Ver caso si es null
+                    actual.replaceMRB(mbrAmpliado);
+                    actual.getPadre().ampliar(mbrAmpliado);
+                    MBR nuevoMBR= (MBR) actual.getPadre();
+                    if(mbrNodo.equals(nuevoMBR))
+                        return; // No hubo ampliacion al agregar el MBR ampliado
+                    mbrAmpliado= nuevoMBR;
+                    // Seguimos ampliando hacia la raiz
+                }else if(overflow){
+                    // Puede haber otro overflow o ampliacion
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre()); //TODO Ver caso si es null
+                    actual.eliminarRectangulo(mbrBorrar);
+                    actual.appendRectangulo(nuevoMbr1);
+                    if(actual.isfull()){
+                        // Nuevo overflow
+                        //TODO Terminar caso nuevo overflow
+                    }else{
+                        actual.appendRectangulo(nuevoMbr2);
+                        MBR nuevoMBR= (MBR) actual.getPadre();
+                        if(!mbrNodo.equals(nuevoMBR)){
+                            // Hay que ampliar hacia la raiz
+                            overflow= false;
+                            ampliar= true;
+                            mbrAmpliado= nuevoMBR;
+                        }
+                    }
+                }
+                pila.pop();
+                continue;
+            }
+            infoActual.visitado= true;
+            INodo actual= NodoUtils.leerNodo(infoActual.id);
+            if(actual.esHoja()){
+                // Insertar y si no hay Overflow ni hay que ampliar retornamos.
+
+                if (!actual.isfull()) {// la hoja tiene espacio
+                    MBR mbrNodo= new MBR((MBR) actual.getPadre());
+                    actual.appendRectangulo(dato);
+                    MBR nuevoMBR= (MBR) actual.getPadre();
+                    if(!mbrNodo.equals(nuevoMBR)){
+                        // Se amplio el mbr del nodo, por lo que puede que
+                        // se deba ampliar el mbr de arriba.
+                        ampliar= true;
+                        mbrAmpliado= nuevoMBR;
+                        pila.pop(); // Quitamos el nodo actual de la pila
+                        continue;
+                    }
+                    // No se amplio el mbr ni hubo overflow, retornamos.
+                    return;
+                }
+                // El nodo esta lleno, hay overflow.
+                overflow= true;
+                mbrBorrar= new MBR((MBR) actual.getPadre());
+                Pair<INodo, INodo> parNodos = heuristicaDummy(actual, dato);
+                parNodos.getKey().guardar();
+                parNodos.getValue().guardar();
+                nuevoMbr1= (MBR) parNodos.getKey().getPadre();
+                nuevoMbr2= (MBR) parNodos.getValue().getPadre();
+                pila.pop(); // Quitamos el nodo actual de la pila
+                continue;
+            }
+            // El nodo actual no es una hoja
+            // TODO Revisar target_rectangulo
+            MBR rectDescenso= (MBR) actual.target_rectangulo(dato, this);
+            pila.push(new InfoNodo(rectDescenso.getId(), false));
+
+        }// Fin while
+    }
+
+}
 
 
 

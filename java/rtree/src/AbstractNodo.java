@@ -45,9 +45,9 @@ public abstract class AbstractNodo implements INodo {
 
     @Override
     public void setRectangulo(int pos, IRectangulo rect){
-
         rectangulos.set(pos, rect);
     }
+
 
     @Override
     public void setPadre(int id){

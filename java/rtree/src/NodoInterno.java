@@ -11,4 +11,15 @@ public class NodoInterno extends AbstractNodo {
         return false;
     }
 
+    /*
+    Busca el MBR en el nodo que apunta al mismo id apuntado por mbr y lo
+    reemplaza.
+     */
+    public void replaceMRB(MBR mbr){
+        for(int i= 0; i<this.cantidadRectangulos(); i++){
+            if(this.getRectangulo(i).getId() == mbr.getId()){
+                this.setRectangulo(i, mbr);
+            }
+        }
+    }
 }

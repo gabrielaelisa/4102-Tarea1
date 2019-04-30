@@ -4,10 +4,12 @@ public class MBR extends AbstractRectangulo {
         super(idNodo, x, y, ancho, alto);
     }
 
-    public int getIdNodo(){
-        return idNodo;
+    public MBR(MBR mbr){
+        super(mbr.getId(), mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
     }
+
 
     public void setidNodo(int id){ this.idNodo = id;}
     public boolean esDato(){ return  false;}
+
 }
