@@ -9,14 +9,9 @@ public interface IRectangulo extends Serializable {
 
     int getY();
 
-
-    int getIdContainer();
-
     int ancho();
 
     int alto();
-
-    void setContainer(int id);
 
     boolean contains2(int x, int y, int a);
 
