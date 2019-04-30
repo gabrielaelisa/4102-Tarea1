@@ -102,7 +102,8 @@ public class RTree implements Serializable{
         return new Pair<>(nodo_izq, nodo_der);
     }
 
-    public Pair<INodo, INodo> linearSplit(INodo n, IRectangulo r){
+    //m: capacidad minima que se debe ocupar de los nodos izq y der resultantes 
+    public Pair<INodo, INodo> linearSplit(int m, INodo n, IRectangulo r){
         INodo nodo_izq = null;
         INodo nodo_der = null;
         
@@ -115,29 +116,29 @@ public class RTree implements Serializable{
         for(int i = 0; i < n.cantidadRectangulos(); i++){
             IRectangulo current = n.getRectangulo(i);
 
-            //lado superior que esta más abajo 
-            if(r_sup == null){
-                r_sup = current;
-            }
-            r_sup = r_sup.getY()+ r_sup.alto() < current.getY()+ current.alto()? r_sup : current;
-
-            //lado inferior que esta más arriba
+            //rectangulo con lado superior que esta más abajo 
             if(r_inf == null){
                 r_inf = current;
             }
-            r_inf = r_inf.getY() > current.getY()? r_inf : current;
+            r_inf = r_inf.getY()+ r_inf.alto() < current.getY()+ current.alto()? r_inf : current;
 
-            //lado izquierdo que esta mas a la derecha
-            if(r_izq == null){
-                r_izq = current;
+            //rectangulo con lado inferior que esta más arriba
+            if(r_sup == null){
+                r_sup = current;
             }
-            r_izq = r_izq.getX() > current.getX()? r_izq : current;
+            r_sup = r_sup.getY() > current.getY()? r_sup : current;
 
-            //lado derecho que esta mas a la izquierda
+            //rectangulo con lado izquierdo que esta mas a la derecha
             if(r_der == null){
                 r_der = current;
             }
-            r_der = r_der.getX()+ r_der.ancho() < current.getX()+ current.ancho()? r_der : current;  
+            r_der = r_der.getX() > r_.getX()? r_der : current;
+
+            //rectangulo con lado derecho que esta mas a la izquierda
+            if(r_izq == null){
+                r_izq = current;
+            }
+            r_izq = r_izq.getX()+ r_izq.ancho() < current.getX()+ current.ancho()? r_izq : current;  
         }
 
         //Calculamos distancias maximas entre cada eje
@@ -145,10 +146,62 @@ public class RTree implements Serializable{
         int dif_y = r_sup.getY() - (r_inf.getY() + r_inf.alto());
 
         //Calculamos rangos
-        //....
-        //Comparamos cual es mayor
-        //Se insertan a nodo izq y der
+        int r_x = r_der.getX()+ r_der.ancho() - (r_izq.getX());
+        int r_y = r_sup.getY() + r_sup.alto() - (r.inf.getX());
+        
+        //Comparamos cual es mejor: la distancia mayor normalizada e insertamos a nodo_izq y nodo_der lo que corresponda
+        double n_x = dif_x/r_x;
+        double n_y = dif_y/r_y;
+        int i_izq = 0; //indices
+        int i_der = 0; 
+        if(n_x > n_y){
+           i_izq = n.indexRectangulo(r_izq);
+           i_der = n.indexRectangulo(r_der);
+        }
+        else{
+            i_izq = n.indexRectangulo(r_sup);
+            i_der = n.indexRectangulo(r_inf);
+        }
+        //se insertan
+        if(n.esHoja()){
+            nodo_izq = new NodoHoja(popNextId(), n.popRectangulo(i_izq));
+            nodo_der = new NodoHoja(popNextId(), n.popRectangulo(d_der));
+        }
+        else{
+            nodo_izq= new NodoInterno(popNextId(),n.popRectangulo(i_izq));
+            nodo_der=new NodoInterno(popNextId(), n.popRectangulo(d_der));
+        }
+
         //se inserta el resto
+
+        int len = 0;
+        while(!n.isEmpty()){
+            len = n.cantidadRectangulos();
+            int random_index = (int) (Math.random() * len) + 1; //indice rectangulo random a insertar
+
+            IRectangulo mbr_izq = nodo_izq.getPadre();
+            IRectangulo mbr_der = nodo_der.getPadre();
+
+            double dif_izq = mbr_izq.ampliar(n.getRectangulo(random_index));
+            double dif_der = mbr_der.ampliar(n.getRectangulo(random_index));
+            
+            //primero hay que verificar si quedan menos de m elementos para insertar y el tamanio de nodo_izq o nodo_der aun no supera m
+            if(n.cantidadRectangulos <= m && nodo_izq.cantidadRectangulos() < m ){
+                nodo_izq.appendRectangulo(n.popRectangulo(random_index));
+            }
+            else if(n.cantidadRectangulos <= m && nodo_der.cantidadRectangulos() < m ){
+                nodo_der.appendRectangulo(n.popRectangulo(random_index));
+            }
+            else{ // caso en que queden mas de m elementos por insertar o nodo_izq y nodo_der tienen mas de m elementos cada uno
+                //Comparamos crecimiento de areas
+                if(dif_izq < dif_der){
+                    nodo_izq.appendRectangulo(n.popRectangulo(random_index));
+                }
+                else{
+                    nodo_der.appendRectangulo(n.popRectangulo(random_index));
+                }
+            }
+        }
 
 
         return new Pair<>(nodo_izq, nodo_der);

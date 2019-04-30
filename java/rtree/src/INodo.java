@@ -39,4 +39,8 @@ public interface INodo extends Serializable {
 
     public IRectangulo popRectangulo();
 
+    int indexRectangulo(IRectangulo r);
+
+    IRectangulo popRectangulo(int i);
+
 }
