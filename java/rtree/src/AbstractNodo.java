@@ -6,9 +6,8 @@ import java.util.ArrayList;
 
 
 public abstract class AbstractNodo implements INodo {
-    protected int M= 10;
-    //protected int M= 1000000; // Cantidad maxima de datos (Rectangulos) en un nodo
-    protected int m= 1000; // Cantidad minima de datos
+    protected int M;
+    protected int m; // Cantidad minima de datos
     private int id;
     private int cantidad_hijos=0;
     private boolean tiene_padre= false;
@@ -17,9 +16,11 @@ public abstract class AbstractNodo implements INodo {
     protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
 
 
-    protected AbstractNodo(int id, IRectangulo mbr){
+    protected AbstractNodo(int id, IRectangulo mbr, int M, int m){
         this.id= id;
         this.padre= new MBR(id, mbr.getX(), mbr.getY(), mbr.ancho(), mbr.alto());
+        this.M= M;
+        this.m = m;
         this.appendRectangulo(mbr);
 
     }

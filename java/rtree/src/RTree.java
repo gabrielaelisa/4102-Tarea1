@@ -19,14 +19,17 @@ public class RTree implements Serializable{
     // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
     protected NodoUtils u;
     public boolean reajustar=false;
-
+    int M ;
+    int m;
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
-    public RTree(Dato rectangulo1, String split){
+    public RTree(Dato rectangulo1, String split, int M, int m){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
-        current_node= new NodoHoja(popNextId(),rectangulo1);
+        this.M= M;
+        this.m = m;
+        current_node= new NodoHoja(popNextId(),rectangulo1, M, m);
         this.idRaiz= current_node.getId();
-        this.u= new NodoUtils(10, 1000, split);
+        this.u= new NodoUtils(M, m, split);
     }
 
     public int getIdRaiz(){
@@ -68,7 +71,7 @@ public class RTree implements Serializable{
                 parNodos.getKey().guardar();
                 MBR nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 MBR nuevoMbr2= (MBR) parNodos.getValue().getPadre();
-                NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1);
+                NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M, this.m);
                 this.setIdRaiz(nuevaRaiz.getId());
                 nuevaRaiz.appendRectangulo(nuevoMbr2);
                 nuevaRaiz.guardar();
@@ -123,7 +126,7 @@ public class RTree implements Serializable{
                             parNodos.getKey().guardar();
                             nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                             nuevoMbr2= (MBR) parNodos.getValue().getPadre();
-                            NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1);
+                            NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M, this.m);
                             this.setIdRaiz(nuevaRaiz.getId());
                             nuevaRaiz.appendRectangulo(nuevoMbr2);
                             nuevaRaiz.guardar();

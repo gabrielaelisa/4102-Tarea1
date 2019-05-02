@@ -1,9 +1,9 @@
 public class NodoInterno extends AbstractNodo {
 
     // un nodo interno siempre se crea con 2 rectangulos, ya que  se crea a partir de overflow
-    public NodoInterno(int id, IRectangulo mbr){
+    public NodoInterno(int id, IRectangulo mbr, int M, int m){
 
-        super(id, mbr);
+        super(id, mbr, M, m);
     }
 
     @Override
