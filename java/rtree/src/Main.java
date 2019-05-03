@@ -32,8 +32,8 @@ public class Main {
      el ancho y el largo deben ser uniformemente distribuidos en [1, 100]".*/
 
     public static void main(String[] args) {
-        int M= 10000;
-        int m= 1000;
+        int M= 1024;
+        int m= (int)(M*0.4);
 
         RTree tree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
 
@@ -42,6 +42,7 @@ public class Main {
          esto se debe hacer para n en΅{2^9, ... ,2^25}*/
 
         int anterior=0;
+        long tiempo_acc=0;
         for(int i= 9; i< 26; i++) {
             // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
@@ -61,8 +62,9 @@ public class Main {
                 tree.insertarDato(dato);
             }
             long endTime = System.currentTimeMillis();
-            System.out.println("Tiempo total para"+ tree.u.getSplit() +  "split, con n = 2^" + i + ":" +
-                    (endTime - startTime) + "ms");
+            tiempo_acc+= endTime-startTime;
+            System.out.println("Tiempo total para "+ tree.u.getSplit() +  "split, con n = 2^" + i + ":" +
+                    tiempo_acc + "ms");
             /*luego se buscan los n/10 datos necesarios) y generados aleatoriamente*/
             anterior = i - 1;
 
