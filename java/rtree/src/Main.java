@@ -24,7 +24,7 @@ public class Main {
         }
 
 
-    }*/
+    }
 
 
     //------------------ EXPERIMENTO NO CORRER ----------------------------------------
@@ -35,7 +35,7 @@ public class Main {
         int M= 1024;
         int m= (int)(M*0.4);
 
-        RTree tree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
+        RTree tree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
 
         /*habra un solo arbol, en el cual se insertaran los datos de cada intervalo
         y luego se prosigue con la búsqueda

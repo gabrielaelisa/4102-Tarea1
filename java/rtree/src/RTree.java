@@ -3,10 +3,7 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 import javafx.util.Pair;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
-import javafx.util.Pair;
-
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Stack;
 
 public class RTree implements Serializable{
