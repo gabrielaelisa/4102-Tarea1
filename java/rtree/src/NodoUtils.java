@@ -26,6 +26,16 @@ public class NodoUtils {
             return null;
         }
     }
+    public String getSplit(){
+        return split;
+    }
+
+    public int getM() {
+        return M;
+    }
+    public int getm(){
+        return m;
+    }
 
     // Mezcla dos listas
     // primera lista L[l, ... ,m]

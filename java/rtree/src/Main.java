@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Main {
 
@@ -42,18 +43,27 @@ public class Main {
 
         int anterior=0;
         for(int i= 9; i< 26; i++) {
-
+            // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
+            // se crean los rectángulos a insertar
+            ArrayList<Dato> rects= new ArrayList<>();
             for (double j = 0; j < limite; j++) {
                 int x = randomWithRange(1, 500000);
                 int y = randomWithRange(1, 500000);
                 int ancho = randomWithRange(1, 100);
                 int alto = randomWithRange(1, 100);
                 Dato dato = new Dato(x, y, ancho, alto);
-                tree.insertarDato(dato);
-
-
+                rects.add(dato);
             }
+            // se insertan los rectangulos
+            long startTime = System.currentTimeMillis();
+            for (Dato dato : rects) {
+                tree.insertarDato(dato);
+            }
+            long endTime = System.currentTimeMillis();
+            System.out.println("Tiempo total para"+ tree.u.getSplit() +  "split, con n = 2^" + i + ":" +
+                    (endTime - startTime) + "ms");
+            /*luego se buscan los n/10 datos necesarios) y generados aleatoriamente*/
             anterior = i - 1;
 
         }
