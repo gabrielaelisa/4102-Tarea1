@@ -19,8 +19,6 @@ public interface INodo extends Serializable {
 
     int cantidadRectangulos();
 
-    public ArrayList<Integer> indices_hijos();
-
     void eliminar();
 
     void guardar();

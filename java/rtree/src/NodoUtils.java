@@ -227,8 +227,8 @@ public class NodoUtils {
 
         int len = 0;
         while(!n.isEmpty()){
-            len = n.cantidadRectangulos();
-            int random_index = this.randomWithRange(0,len-1); //indice rectangulo random a insertar
+            len = n.getIndiceUltimo();
+            int random_index = this.randomWithRange(0,len); //indice rectangulo random a insertar
 
             IRectangulo mbr_izq = nodo_izq.getPadre();
             IRectangulo mbr_der = nodo_der.getPadre();

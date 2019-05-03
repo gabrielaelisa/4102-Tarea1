@@ -75,18 +75,6 @@ public abstract class AbstractNodo implements INodo {
     }
 
     @Override
-    // esta funcion retorna la lista de los indices de los archivos al cual apunta el Nodo
-    public ArrayList<Integer> indices_hijos(){
-        ArrayList<Integer> indices= new ArrayList<Integer>();
-        for(int i= 0; i<this.indiceUltimo; i++){
-            IRectangulo rec= getRectangulo(i);
-            indices.add(rec.getId());
-        }
-        return indices;
-
-    }
-
-    @Override
     public void guardar() {
         try {
             ObjectOutputStream out = new ObjectOutputStream(
