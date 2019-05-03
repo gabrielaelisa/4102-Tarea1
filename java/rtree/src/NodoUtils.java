@@ -16,6 +16,11 @@ public class NodoUtils {
         this.split= split;
     }
 
+    public static int randomWithRange(int min, int max) {
+        int range = (max - min) + 1;
+        return (int) (Math.random() * range) + min;
+    }
+
     public static INodo leerNodo(int id) {
         try {
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(RTree.DIR + "n" + id + ".node"));
@@ -223,7 +228,7 @@ public class NodoUtils {
         int len = 0;
         while(!n.isEmpty()){
             len = n.cantidadRectangulos();
-            int random_index = (int) (Math.random() * len); //indice rectangulo random a insertar
+            int random_index = this.randomWithRange(0,len-1); //indice rectangulo random a insertar
 
             IRectangulo mbr_izq = nodo_izq.getPadre();
             IRectangulo mbr_der = nodo_der.getPadre();
