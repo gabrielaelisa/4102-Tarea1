@@ -77,7 +77,6 @@ public class RTree implements Serializable{
                 nuevaRaiz.guardar();
                 current_node= null;
                 //garbage collection
-                System.gc();
                 en_memoria_principal= false;
                 return;
             }
@@ -94,7 +93,6 @@ public class RTree implements Serializable{
         pila.push(new InfoNodo(idRaiz, false)); // Comenzamos con el nodo raiz
         while(pila.size()!=0){
             InfoNodo infoActual= pila.peek(); // Obtenemos primera componenete (id) del par en la pila
-            System.gc();
             if(infoActual.visitado){
                 // Si llegamos aqui es porque hubo overflow o ampliacion y
                 // estamos en un nodo interno.
