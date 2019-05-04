@@ -10,7 +10,7 @@ public class pruebas {
         int m = 1;
         RTree tree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
 
-        for (int i = 0; i < 39; i++) {
+        for (int i = 0; i < 1109; i++) {
             int x = randomWithRange(1, 10);
             int y = randomWithRange(1, 10);
             int ancho = randomWithRange(1, 30);
@@ -18,7 +18,7 @@ public class pruebas {
             Dato dato = new Dato(x, y, ancho, alto);
             tree.insertarDato(dato);
         }
-        tree.current_node.guardar();
+        //tree.current_node.guardar();
 
 
     }

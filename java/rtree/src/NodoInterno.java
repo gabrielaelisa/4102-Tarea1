@@ -52,9 +52,6 @@ public class NodoInterno extends AbstractNodo {
                     min_area= area;
                 }
 
-                // TODO Ver si nos quedamos con esto o no:
-                // se debe recorrer el arbol de abajo hacia arriba para recuperar la invariante 1
-                tree.reajustar= true;
             }
 
         }

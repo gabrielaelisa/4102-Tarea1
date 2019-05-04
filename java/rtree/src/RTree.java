@@ -11,19 +11,19 @@ public class RTree implements Serializable{
 
     private int idRaiz;
     private int nextId= 0;
-    public static final String DIR = "datos" + File.separator;
     public INodo current_node;
     public boolean en_memoria_principal= true;
     // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
     protected NodoUtils u;
     public int M ;
-    public int IO_insercion=0;
-    public int IO_busqueda=0;
+    public int accesos=0;
+    public static String DIR ;
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
     public RTree(Dato rectangulo1, String split, int M, int m){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
+        this.DIR= "datos"+ split + File.separator;
         this.M= M;
         current_node= new NodoHoja(popNextId(),rectangulo1, M);
         this.idRaiz= current_node.getId();
@@ -57,9 +57,15 @@ public class RTree implements Serializable{
         }
     }
 
-    public void IO_insercion(int tipo, IRectangulo rec){
-        if(tipo==1)this.IO_insercion+=1;
-        else this.IO_busqueda+=1;
+    public void guardar(INodo nodo){
+        nodo.guardar();
+        this.accesos+=1;
+
+    }
+
+    public INodo leer(int id){
+        this.accesos+=1;
+        return NodoUtils.leerNodo(id);
 
     }
     
@@ -70,14 +76,14 @@ public class RTree implements Serializable{
             if(current_node.isfull()){
                 // Overflow, hay que generar una nueva raiz
                 Pair<INodo, INodo> parNodos = u.split(this,current_node, dato);
-                parNodos.getValue().guardar();
-                parNodos.getKey().guardar();
+                guardar(parNodos.getValue());
+                guardar(parNodos.getKey());
                 MBR nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 MBR nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                 NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                 this.setIdRaiz(nuevaRaiz.getId());
                 nuevaRaiz.appendRectangulo(nuevoMbr2);
-                nuevaRaiz.guardar();
+                guardar(nuevaRaiz);
                 current_node= null;
                 //garbage collection
                 en_memoria_principal= false;
@@ -99,20 +105,19 @@ public class RTree implements Serializable{
             if(infoActual.visitado){
                 // Si llegamos aqui es porque hubo overflow o ampliacion y
                 // estamos en un nodo interno.
-                NodoInterno actual = (NodoInterno) NodoUtils.leerNodo(infoActual.id);
+                NodoInterno actual = (NodoInterno) leer(infoActual.id);
                 if(ampliar){
                     if(actual.getId() == this.idRaiz){
                         // Estamos en la raiz, no hay que ampliar, solo reemplazar.
                         actual.replaceMRB(mbrAmpliado);
-                        actual.guardar();
+                        guardar(actual);
                         return;
                     }
                     // Estamos en un nodo interno que no es la raiz.
                     MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos para comparar luego
                     actual.replaceMRB(mbrAmpliado);
-                    actual.getPadre().ampliar(mbrAmpliado);
                     MBR nuevoMBR= (MBR) actual.getPadre();
-                    actual.guardar();
+                    guardar(actual);
                     if(mbrNodo.equals(nuevoMBR))
                         return; // No hubo ampliacion al agregar el MBR ampliado
                     mbrAmpliado= nuevoMBR;
@@ -126,21 +131,19 @@ public class RTree implements Serializable{
                         if(actual.isfull()){
                             // Creamos un nuevo nodo raiz
                             Pair<INodo, INodo> parNodos = u.split(this,actual, nuevoMbr2);
-                            parNodos.getValue().guardar();
-                            parNodos.getKey().guardar();
+                            guardar(parNodos.getValue());
+                            guardar(parNodos.getKey());
                             nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                             nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                             NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                             this.setIdRaiz(nuevaRaiz.getId());
                             nuevaRaiz.appendRectangulo(nuevoMbr2);
-                            nuevaRaiz.guardar();
+                            guardar(nuevaRaiz);
                             return;
                         }
                         // No esta llena, insertamos y retornamos.
-                        actual.eliminarRectangulo(mbrBorrar);
-                        actual.appendRectangulo(nuevoMbr1);
                         actual.appendRectangulo(nuevoMbr2);
-                        actual.guardar();
+                        guardar(actual);
                         return;
                     }
                     // Estamos en un nodo interno que no es la raiz.
@@ -151,8 +154,8 @@ public class RTree implements Serializable{
                         // Nuevo overflow.
                         mbrBorrar= new MBR((MBR) actual.getPadre());
                         Pair<INodo, INodo> parNodos = u.split(this,actual, nuevoMbr2);
-                        parNodos.getKey().guardar();
-                        parNodos.getValue().guardar();
+                        guardar(parNodos.getKey());
+                        guardar(parNodos.getValue());
                         nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                         nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                         // Se continua manejando el overflow hacia la raiz.
@@ -166,14 +169,14 @@ public class RTree implements Serializable{
                             ampliar= true;
                             mbrAmpliado= nuevoMBR;
                         }
-                        actual.guardar();
+                        guardar(actual);
                     }
                 }
                 pila.pop(); // Se quita el nodo actual de la pila
                 continue; // Continuamos manejando overflow o ampliacion hacia la raiz
             }
             infoActual.visitado= true;
-            INodo actual= NodoUtils.leerNodo(infoActual.id);
+            INodo actual= leer(infoActual.id);
             if(actual.esHoja()){
                 // Insertar y si no hay Overflow ni hay que ampliar retornamos.
 
@@ -181,7 +184,7 @@ public class RTree implements Serializable{
                     MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos el mbr padre para ver si hubo ampliacion
                     actual.appendRectangulo(dato);
                     MBR nuevoMBR= (MBR) actual.getPadre();
-                    actual.guardar();
+                    guardar(actual);
                     if(!mbrNodo.equals(nuevoMBR)){
                         // Se amplio el mbr del nodo, por lo que puede que
                         // se deba ampliar el mbr de arriba.
@@ -197,8 +200,8 @@ public class RTree implements Serializable{
                 overflow= true;
                 mbrBorrar= new MBR((MBR) actual.getPadre());
                 Pair<INodo, INodo> parNodos = u.split(this,actual, dato);
-                parNodos.getKey().guardar();
-                parNodos.getValue().guardar();
+                guardar(parNodos.getKey());
+                guardar(parNodos.getValue());
                 nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                 pila.pop(); // Quitamos el nodo actual de la pila
@@ -219,7 +222,7 @@ public class RTree implements Serializable{
         pila.push(this.getIdRaiz());
         while(!pila.empty()){
             int idActual= pila.pop();
-            INodo actual= NodoUtils.leerNodo(idActual);
+            INodo actual= leer(idActual);
             if(actual.esHoja()){
                 for(int i= 0; i< actual.cantidadRectangulos(); i++){
                     Dato dato = (Dato) actual.getRectangulo(i);
