@@ -205,30 +205,29 @@ public class NodoUtils {
         double n_y = dif_y/r_y;
         int i_izq = 0; //indices
         int i_der = 0;
-        if(n_x > n_y){
-            i_izq = n.indexRectangulo(r_izq);
-            i_der = n.indexRectangulo(r_der);
-        }
-        else{
-            i_izq = n.indexRectangulo(r_sup);
-            i_der = n.indexRectangulo(r_inf);
-        }
+
+        System.out.println(i_der);
+        System.out.println(i_izq);
         //se insertan
         if(n.esHoja()){
-            nodo_izq = new NodoHoja(tree.popNextId(), n.popRectangulo(i_izq), this.M, this.m);
-            nodo_der = new NodoHoja(tree.popNextId(), n.popRectangulo(i_der), this.M, this.m);
+            nodo_izq = new NodoHoja(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_izq): n.indexRectangulo(r_sup)),
+                    this.M, this.m);
+            nodo_der = new NodoHoja(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_der): n.indexRectangulo(r_inf)),
+                    this.M, this.m);
         }
         else{
-            nodo_izq= new NodoInterno(tree.popNextId(),n.popRectangulo(i_izq), this.M, this.m);
-            nodo_der=new NodoInterno(tree.popNextId(), n.popRectangulo(i_der), this.M, this.m);
+            nodo_izq= new NodoInterno(tree.popNextId(),n.popRectangulo(n_x>n_y?n.indexRectangulo(r_izq): n.indexRectangulo(r_sup)),
+                    this.M, this.m);
+            nodo_der=new NodoInterno(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_der): n.indexRectangulo(r_inf))
+                    , this.M, this.m);
         }
 
         //se inserta el resto
 
         int len = 0;
         while(!n.isEmpty()){
-            len = n.getIndiceUltimo();
-            int random_index = this.randomWithRange(0,len); //indice rectangulo random a insertar
+            len = n.cantidadRectangulos();
+            int random_index = this.randomWithRange(0,len -1); //indice rectangulo random a insertar
 
             IRectangulo mbr_izq = nodo_izq.getPadre();
             IRectangulo mbr_der = nodo_der.getPadre();
