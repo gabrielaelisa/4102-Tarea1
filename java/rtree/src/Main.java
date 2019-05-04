@@ -19,29 +19,27 @@ public class Main {
         RTree ltree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
         RTree gtree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
 
-        /*habra un solo arbol, en el cual se insertaran los datos de cada intervalo
-        y luego se prosigue con la búsqueda
-         esto se debe hacer para n en΅{2^9, ... ,2^25}*/
+        /* se inserta y luego se prosigue en la busqueda sobre el mismo arbol*/
 
         int anterior=0;
         long tiempo_acc_l=0;
         long tiempo_acc_g=0;
-        for(int i= 5; i< 26; i++) {
+        for(int i= 7; i< 20; i++) {
             // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
             // se crean los rectángulos a insertar
-            ArrayList<Dato> rects= new ArrayList<>();
+            ArrayList<Dato> rects_i= new ArrayList<>();
             for (double j = 0; j < limite; j++) {
                 int x = randomWithRange(1, 500000);
                 int y = randomWithRange(1, 500000);
                 int ancho = randomWithRange(1, 100);
                 int alto = randomWithRange(1, 100);
                 Dato dato = new Dato(x, y, ancho, alto);
-                rects.add(dato);
+                rects_i.add(dato);
             }
             // se insertan los rectangulos para linear
             long startTime = System.currentTimeMillis();
-            for (Dato dato : rects) {
+            for (Dato dato : rects_i) {
                 ltree.insertarDato(dato);
             }
             long endTime = System.currentTimeMillis();
@@ -49,22 +47,64 @@ public class Main {
 
             // se insertan rectangulos para greene
             long startTime2 = System.currentTimeMillis();
-            for (Dato dato : rects) {
+            for (Dato dato : rects_i) {
                 gtree.insertarDato(dato);
             }
             long endTime2 = System.currentTimeMillis();
             tiempo_acc_g+= endTime2-startTime2;
 
-            System.out.println("Tiempo total para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ":" +
+            System.out.println("Tiempo total para la insercion "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     tiempo_acc_l + "ms");
-            System.out.println("Tiempo total para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ":" +
+            System.out.println("Tiempo total para la insercion "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     tiempo_acc_g + "ms");
 
+            //------------------------- BÚSQUEDA-----------------------------------------------------------------------
+            /*
+            // se crean reactangulos a buscar
+            ArrayList<MBR> rects_b= new ArrayList<>();
+            for (double j = 0; j < (double)limite/10; j++) {
+                int x = randomWithRange(1, 500000);
+                int y = randomWithRange(1, 500000);
+                int ancho = randomWithRange(1, 100);
+                int alto = randomWithRange(1, 100);
+                MBR rect = new MBR(-1,x, y, ancho, alto);
+                rects_b.add(rect);
+            }
+            // se insertan los rectangulos para linear
+            long startTime_b = System.currentTimeMillis();
+            for (MBR rect : rects_b) {
+                ltree.buscar(rect);
+            }
+            long endTime_b = System.currentTimeMillis();
+
+
+            // se insertan rectangulos para greene
+            long startTime_b2 = System.currentTimeMillis();
+            for (MBR rect : rects_b) {
+                gtree.buscar(rect);
+            }
+            long endTime_b2 = System.currentTimeMillis();
+
+            System.out.println("Tiempo total para búsqueda "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+                    (endTime_b-startTime_b) + "ms");
+            System.out.println("Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+                    ltree.accesos);
+            System.out.println("Tiempo total para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+                    (endTime_b2-startTime_b2) +"ms");
+
+            System.out.println("Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+                    gtree.accesos );
+
+
+            // seteamos accesos en 0
+            ltree.accesos=0;
+            gtree.accesos=0;*/
             anterior = i - 1;
-            /*luego se buscan los n/10 datos necesarios) y generados aleatoriamente*/
+
 
 
         }
+
 
 
     }

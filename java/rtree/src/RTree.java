@@ -76,14 +76,14 @@ public class RTree implements Serializable{
             if(current_node.isfull()){
                 // Overflow, hay que generar una nueva raiz
                 Pair<INodo, INodo> parNodos = u.split(this,current_node, dato);
-                guardar(parNodos.getValue());
-                guardar(parNodos.getKey());
+                parNodos.getValue().guardar();
+                parNodos.getKey().guardar();
                 MBR nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 MBR nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                 NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                 this.setIdRaiz(nuevaRaiz.getId());
                 nuevaRaiz.appendRectangulo(nuevoMbr2);
-                guardar(nuevaRaiz);
+                nuevaRaiz.guardar();
                 current_node= null;
                 //garbage collection
                 en_memoria_principal= false;
@@ -105,19 +105,19 @@ public class RTree implements Serializable{
             if(infoActual.visitado){
                 // Si llegamos aqui es porque hubo overflow o ampliacion y
                 // estamos en un nodo interno.
-                NodoInterno actual = (NodoInterno) leer(infoActual.id);
+                NodoInterno actual = (NodoInterno) NodoUtils.leerNodo(infoActual.id);
                 if(ampliar){
                     if(actual.getId() == this.idRaiz){
                         // Estamos en la raiz, no hay que ampliar, solo reemplazar.
                         actual.replaceMRB(mbrAmpliado);
-                        guardar(actual);
+                        actual.guardar();
                         return;
                     }
                     // Estamos en un nodo interno que no es la raiz.
                     MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos para comparar luego
                     actual.replaceMRB(mbrAmpliado);
                     MBR nuevoMBR= (MBR) actual.getPadre();
-                    guardar(actual);
+                    actual.guardar();
                     if(mbrNodo.equals(nuevoMBR))
                         return; // No hubo ampliacion al agregar el MBR ampliado
                     mbrAmpliado= nuevoMBR;
@@ -131,19 +131,19 @@ public class RTree implements Serializable{
                         if(actual.isfull()){
                             // Creamos un nuevo nodo raiz
                             Pair<INodo, INodo> parNodos = u.split(this,actual, nuevoMbr2);
-                            guardar(parNodos.getValue());
-                            guardar(parNodos.getKey());
+                            parNodos.getValue().guardar();
+                            parNodos.getKey().guardar();
                             nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                             nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                             NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                             this.setIdRaiz(nuevaRaiz.getId());
                             nuevaRaiz.appendRectangulo(nuevoMbr2);
-                            guardar(nuevaRaiz);
+                            nuevaRaiz.guardar();
                             return;
                         }
                         // No esta llena, insertamos y retornamos.
                         actual.appendRectangulo(nuevoMbr2);
-                        guardar(actual);
+                        actual.guardar();
                         return;
                     }
                     // Estamos en un nodo interno que no es la raiz.
@@ -154,8 +154,8 @@ public class RTree implements Serializable{
                         // Nuevo overflow.
                         mbrBorrar= new MBR((MBR) actual.getPadre());
                         Pair<INodo, INodo> parNodos = u.split(this,actual, nuevoMbr2);
-                        guardar(parNodos.getKey());
-                        guardar(parNodos.getValue());
+                        parNodos.getKey().guardar();
+                        parNodos.getValue().guardar();
                         nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                         nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                         // Se continua manejando el overflow hacia la raiz.
@@ -169,14 +169,14 @@ public class RTree implements Serializable{
                             ampliar= true;
                             mbrAmpliado= nuevoMBR;
                         }
-                        guardar(actual);
+                        actual.guardar();
                     }
                 }
                 pila.pop(); // Se quita el nodo actual de la pila
                 continue; // Continuamos manejando overflow o ampliacion hacia la raiz
             }
             infoActual.visitado= true;
-            INodo actual= leer(infoActual.id);
+            INodo actual= NodoUtils.leerNodo(infoActual.id);
             if(actual.esHoja()){
                 // Insertar y si no hay Overflow ni hay que ampliar retornamos.
 
@@ -184,7 +184,7 @@ public class RTree implements Serializable{
                     MBR mbrNodo= new MBR((MBR) actual.getPadre()); // Copiamos el mbr padre para ver si hubo ampliacion
                     actual.appendRectangulo(dato);
                     MBR nuevoMBR= (MBR) actual.getPadre();
-                    guardar(actual);
+                    actual.guardar();
                     if(!mbrNodo.equals(nuevoMBR)){
                         // Se amplio el mbr del nodo, por lo que puede que
                         // se deba ampliar el mbr de arriba.
@@ -200,8 +200,8 @@ public class RTree implements Serializable{
                 overflow= true;
                 mbrBorrar= new MBR((MBR) actual.getPadre());
                 Pair<INodo, INodo> parNodos = u.split(this,actual, dato);
-                guardar(parNodos.getKey());
-                guardar(parNodos.getValue());
+                parNodos.getKey().guardar();
+                parNodos.getValue().guardar();
                 nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 nuevoMbr2= (MBR) parNodos.getValue().getPadre();
                 pila.pop(); // Quitamos el nodo actual de la pila

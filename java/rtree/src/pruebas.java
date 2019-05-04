@@ -10,7 +10,7 @@ public class pruebas {
         int m = 1;
         RTree tree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
 
-        for (int i = 0; i < 1109; i++) {
+        for (int i = 0; i < 11000; i++) {
             int x = randomWithRange(1, 10);
             int y = randomWithRange(1, 10);
             int ancho = randomWithRange(1, 30);
