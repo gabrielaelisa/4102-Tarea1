@@ -219,23 +219,36 @@ public class RTree implements Serializable{
     public ArrayList<Dato> buscar(MBR mbr){
         ArrayList<Dato> datos = new ArrayList<>();
         Stack<Integer> pila= new Stack<>();
-        pila.push(this.getIdRaiz());
-        while(!pila.empty()){
-            int idActual= pila.pop();
-            INodo actual= leer(idActual);
-            if(actual.esHoja()){
-                for(int i= 0; i< actual.cantidadRectangulos(); i++){
-                    Dato dato = (Dato) actual.getRectangulo(i);
-                    if(mbr.contains(dato)){
-                        datos.add(new Dato(dato));
-                    }
-                }
-                continue;
-            }
-            for(int i= 0; i< actual.cantidadRectangulos(); i++){
-                MBR rec= (MBR) actual.getRectangulo(i);
+
+        // solo hay un nodo en memoria principal
+        if(en_memoria_principal){
+            for(int i= 0; i< current_node.cantidadRectangulos(); i++){
+                IRectangulo rec=  current_node.getRectangulo(i);
                 if(rec.intersects(mbr)){
                     pila.push(rec.getId());
+                }
+            }
+
+        }
+        else{
+            pila.push(this.getIdRaiz());
+            while(!pila.empty()){
+                int idActual= pila.pop();
+                INodo actual= leer(idActual);
+                if(actual.esHoja()){
+                    for(int i= 0; i< actual.cantidadRectangulos(); i++){
+                        Dato dato = (Dato) actual.getRectangulo(i);
+                        if(mbr.contains(dato)){
+                            datos.add(new Dato(dato));
+                        }
+                    }
+                    continue;
+                }
+                for(int i= 0; i< actual.cantidadRectangulos(); i++){
+                    MBR rec= (MBR) actual.getRectangulo(i);
+                    if(rec.intersects(mbr)){
+                        pila.push(rec.getId());
+                    }
                 }
             }
         }

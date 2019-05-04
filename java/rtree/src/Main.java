@@ -59,7 +59,7 @@ public class Main {
                     tiempo_acc_g + "ms");
 
             //------------------------- BÚSQUEDA-----------------------------------------------------------------------
-            /*
+
             // se crean reactangulos a buscar
             ArrayList<MBR> rects_b= new ArrayList<>();
             for (double j = 0; j < (double)limite/10; j++) {
@@ -89,7 +89,7 @@ public class Main {
                     (endTime_b-startTime_b) + "ms");
             System.out.println("Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     ltree.accesos);
-            System.out.println("Tiempo total para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Tiempo total para búsqueda "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     (endTime_b2-startTime_b2) +"ms");
 
             System.out.println("Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
@@ -98,7 +98,7 @@ public class Main {
 
             // seteamos accesos en 0
             ltree.accesos=0;
-            gtree.accesos=0;*/
+            gtree.accesos=0;
             anterior = i - 1;
 
 
