@@ -11,15 +11,11 @@ public interface INodo extends Serializable {
 
     IRectangulo getRectangulo(int pos);
 
-    public int getIndiceUltimo();
-
     void setRectangulo(int pos, IRectangulo rect);
 
     void appendRectangulo(IRectangulo rec);
 
     int cantidadRectangulos();
-
-    public ArrayList<Integer> indices_hijos();
 
     void eliminar();
 
@@ -28,10 +24,6 @@ public interface INodo extends Serializable {
     boolean isfull();
 
     boolean isEmpty();
-
-    public boolean tienePadre();
-
-    public void setPadre(int id);
 
     void eliminarRectangulo( IRectangulo rec);
 

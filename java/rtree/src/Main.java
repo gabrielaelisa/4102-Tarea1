@@ -32,7 +32,7 @@ public class Main {
      el ancho y el largo deben ser uniformemente distribuidos en [1, 100]".*/
 
     public static void main(String[] args) {
-        int M= 1024;
+        int M= 143;
         int m= (int)(M*0.4);
 
         RTree tree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);

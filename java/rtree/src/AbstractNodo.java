@@ -9,11 +9,9 @@ public abstract class AbstractNodo implements INodo {
     protected int M;
     protected int m; // Cantidad minima de datos
     private int id;
-    private int cantidad_hijos=0;
     private boolean tiene_padre= false;
     public IRectangulo padre; // corresponde al rectangulo que representa el area de este nodo y su futuro padre
-    protected int indiceUltimo= -1; // Indice del ultimo Rectangulo
-    protected ArrayList<IRectangulo> rectangulos= new ArrayList<>(M);
+    protected ArrayList<IRectangulo> rectangulos= new ArrayList<>();
 
 
     protected AbstractNodo(int id, IRectangulo mbr, int M, int m){
@@ -29,9 +27,6 @@ public abstract class AbstractNodo implements INodo {
     public int getId(){
 
         return id;
-    }
-    public int getIndiceUltimo(){
-        return indiceUltimo;
     }
 
 
@@ -49,42 +44,18 @@ public abstract class AbstractNodo implements INodo {
         rectangulos.set(pos, rect);
     }
 
-
     @Override
-    public void setPadre(int id){
-        this.tiene_padre=true;
+    public int cantidadRectangulos(){
+        return rectangulos.size();
     }
 
     @Override
     public void appendRectangulo(IRectangulo rect){
-        rectangulos.add(++this.indiceUltimo, rect);
-        cantidad_hijos+=1;
+        rectangulos.add(rect);
         this.padre.ampliar(rect);
     }
 
-    @Override
-    public int cantidadRectangulos(){
 
-        return cantidad_hijos;
-    }
-
-
-    @Override
-    public boolean tienePadre(){
-        return this.tiene_padre;
-    }
-
-    @Override
-    // esta funcion retorna la lista de los indices de los archivos al cual apunta el Nodo
-    public ArrayList<Integer> indices_hijos(){
-        ArrayList<Integer> indices= new ArrayList<Integer>();
-        for(int i= 0; i<this.indiceUltimo; i++){
-            IRectangulo rec= getRectangulo(i);
-            indices.add(rec.getId());
-        }
-        return indices;
-
-    }
 
     @Override
     public void guardar() {
@@ -118,28 +89,23 @@ public abstract class AbstractNodo implements INodo {
 
     @Override
     public boolean isfull(){
-        return cantidadRectangulos()>= M;
+        return(this.rectangulos.size()>= M);
     }
 
     @Override
     public boolean isEmpty(){
-        return cantidadRectangulos() == 0;
+        return this.rectangulos.size() == 0;
     }
-
 
 
 
     public void eliminarRectangulo( IRectangulo rec){
         this.rectangulos.remove(rec);
-        indiceUltimo--;
-        cantidad_hijos-=1;
     }
     // popea el rectangulo en posicion 0 y lo elimina de la lista
     public IRectangulo popRectangulo(){
         IRectangulo rec =getRectangulo(0);
         this.rectangulos.remove(0);
-        indiceUltimo--;
-        cantidad_hijos-=1;
         return rec;
     }
 
