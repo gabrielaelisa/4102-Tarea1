@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -17,9 +18,9 @@ public interface INodo extends Serializable {
 
     int cantidadRectangulos();
 
-    void eliminar();
+    void eliminar(String dir);
 
-    void guardar();
+    void guardar(String dir);
 
     boolean isfull();
 

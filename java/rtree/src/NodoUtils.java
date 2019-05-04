@@ -21,9 +21,10 @@ public class NodoUtils {
         return (int) (Math.random() * range) + min;
     }
 
-    public static INodo leerNodo(int id) {
+    public INodo leerNodo(int id, String dir) {
+
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(RTree.DIR + "n" + id + ".node"));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(dir + "n" + id + ".node"));
             return (INodo) in.readObject();
         } catch (Exception e) {
             e.printStackTrace();

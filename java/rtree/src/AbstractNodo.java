@@ -59,10 +59,10 @@ public abstract class AbstractNodo implements INodo {
 
 
     @Override
-    public void guardar() {
+    public void guardar(String dir) {
         try {
             ObjectOutputStream out = new ObjectOutputStream(
-                    new FileOutputStream(RTree.DIR + "n" + id + ".node"));
+                    new FileOutputStream(dir + "n" + id + ".node"));
             out.writeObject(this);
             out.close();
         } catch (Exception e) {
@@ -73,15 +73,15 @@ public abstract class AbstractNodo implements INodo {
 
     @Override
     // esta funcion elimina el nodo de disco ya que va a ser reemplazado
-    public void eliminar() {
-        Path path = Paths.get(RTree.DIR + "n" + id + ".node");
+    public void eliminar(String dir) {
+        Path path = Paths.get(dir + "n" + id + ".node");
 
         try {
             Files.delete(path);
         } catch (NoSuchFileException x) {
-            System.err.format("%s: no such" + " file or directory%n", RTree.DIR + "n" + id + ".node");
+            System.err.format("%s: no such" + " file or directory%n", dir + "n" + id + ".node");
         } catch (DirectoryNotEmptyException x) {
-            System.err.format("%s not empty%n", RTree.DIR + "n" + id + ".node");
+            System.err.format("%s not empty%n", dir + "n" + id + ".node");
         } catch (IOException x) {
             // File permission problems are caught here.
             System.err.println(x);
