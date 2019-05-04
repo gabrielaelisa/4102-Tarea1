@@ -342,6 +342,8 @@ public class NodoUtils {
     }
 
     public Pair<INodo, INodo> split(RTree tree, INodo nodo, IRectangulo rec){
+        // la cantidad de nodos aumenta en dos
+        tree.cantidad_nodos+=2;
         if(split.equals("linear")){
             return this.linearSplit(tree, nodo, rec);
         }

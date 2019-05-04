@@ -19,12 +19,15 @@ public class Main {
         RTree ltree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
         RTree gtree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
 
+
+
+        //----------------------------1 INSERCION --------------------------------------------
         /* se inserta y luego se prosigue en la busqueda sobre el mismo arbol*/
 
         int anterior=0;
         long tiempo_acc_l=0;
         long tiempo_acc_g=0;
-        for(int i= 7; i< 20; i++) {
+        for(int i= 7; i< 26; i++) {
             // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
             // se crean los rectángulos a insertar
@@ -53,12 +56,21 @@ public class Main {
             long endTime2 = System.currentTimeMillis();
             tiempo_acc_g+= endTime2-startTime2;
 
-            System.out.println("Tiempo total para la insercion "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("1 Tiempo total para la insercion "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     tiempo_acc_l + "ms");
-            System.out.println("Tiempo total para la insercion "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+            System.out.println("1 Tiempo total para la insercion "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     tiempo_acc_g + "ms");
 
-            //------------------------- BÚSQUEDA-----------------------------------------------------------------------
+
+
+            //------------------------  2 PORCENTAJE DE USO DE DISCO ------------------------------------------------
+
+            System.out.println("2 Porcentaje de uso de disco para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+                    ltree.Uso_Disco());
+            System.out.println("2 Porcentaje de uso de disco para"+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+                    gtree.Uso_Disco());
+
+            //-------------------------  3     BÚSQUEDA-------------------------------------------------------------
 
             // se crean reactangulos a buscar
             ArrayList<MBR> rects_b= new ArrayList<>();
@@ -85,14 +97,14 @@ public class Main {
             }
             long endTime_b2 = System.currentTimeMillis();
 
-            System.out.println("Tiempo total para búsqueda "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("3 Tiempo total para búsqueda "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     (endTime_b-startTime_b) + "ms");
-            System.out.println("Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+            System.out.println("3 Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     ltree.accesos);
-            System.out.println("Tiempo total para búsqueda "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("3 Tiempo total para búsqueda "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     (endTime_b2-startTime_b2) +"ms");
 
-            System.out.println("Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("3 Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     gtree.accesos );
 
 
