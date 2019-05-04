@@ -16,9 +16,27 @@ public class Main {
         int M= 148;
         int m= (int)(M*0.4);
 
-        RTree ltree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
-        RTree gtree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
+        int x1 = randomWithRange(1, 500000);
+        int y1= randomWithRange(1, 500000);
+        int ancho1 = randomWithRange(1, 100);
+        int alto1 = randomWithRange(1, 100);
 
+        RTree ltree = new RTree(new Dato(x1, y1, ancho1, alto1), "linear", M, m);
+        RTree gtree = new RTree(new Dato(x1, y1, ancho1, alto1), "greene", M, m);
+        RTree warmstate= new RTree(new Dato(x1, y1, ancho1, alto1), "dummy", M, m);
+
+
+        // Se realiza un pequeño warm up
+        for(int i=0;i< 4096;i++){
+            int x = randomWithRange(1, 500000);
+            int y = randomWithRange(1, 500000);
+            int ancho = randomWithRange(1, 100);
+            int alto = randomWithRange(1, 100);
+            Dato dato = new Dato(x, y, ancho, alto);
+            warmstate.insertarDato(dato);
+
+        }
+        warmstate=null;
 
 
         //----------------------------1 INSERCION --------------------------------------------
@@ -27,7 +45,7 @@ public class Main {
         int anterior=0;
         long tiempo_acc_l=0;
         long tiempo_acc_g=0;
-        for(int i= 7; i< 26; i++) {
+        for(int i= 7; i< 21; i++) {
             // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
             // se crean los rectángulos a insertar
@@ -56,18 +74,18 @@ public class Main {
             long endTime2 = System.currentTimeMillis();
             tiempo_acc_g+= endTime2-startTime2;
 
-            System.out.println("1 Tiempo total para la insercion "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Tiempo total para la insercion para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     tiempo_acc_l + "ms");
-            System.out.println("1 Tiempo total para la insercion "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+            System.out.println("Tiempo total para la insercion para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     tiempo_acc_g + "ms");
 
 
 
             //------------------------  2 PORCENTAJE DE USO DE DISCO ------------------------------------------------
 
-            System.out.println("2 Porcentaje de uso de disco para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Porcentaje de uso de disco para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     ltree.Uso_Disco());
-            System.out.println("2 Porcentaje de uso de disco para"+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+            System.out.println("Porcentaje de uso de disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     gtree.Uso_Disco());
 
             //-------------------------  3     BÚSQUEDA-------------------------------------------------------------
@@ -97,14 +115,14 @@ public class Main {
             }
             long endTime_b2 = System.currentTimeMillis();
 
-            System.out.println("3 Tiempo total para búsqueda "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Tiempo total para búsqueda para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     (endTime_b-startTime_b) + "ms");
-            System.out.println("3 Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
+            System.out.println("Accesos a disco  para "+ ltree.u.getSplit() +  "split, con n = 2^" + i + ": " +
                     ltree.accesos);
-            System.out.println("3 Tiempo total para búsqueda "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Tiempo total para búsqueda para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     (endTime_b2-startTime_b2) +"ms");
 
-            System.out.println("3 Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
+            System.out.println("Accesos a disco para "+ gtree.u.getSplit() +  "split, con n = 2^" + i + " : " +
                     gtree.accesos );
 
 

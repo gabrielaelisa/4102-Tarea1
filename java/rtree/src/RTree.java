@@ -49,8 +49,8 @@ public class RTree implements Serializable{
         return nextId++;
     }
 
-    public int Uso_Disco(){
-      return  (cantidad_rectangulos/ cantidad_nodos*M);
+    public float Uso_Disco(){
+        return ((float)cantidad_rectangulos/(float) (cantidad_nodos*M));
 
     }
 
