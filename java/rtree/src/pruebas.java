@@ -6,11 +6,11 @@ public class pruebas {
     }
 
     public static void main(String[] args) {
-        int M = 20;
-        int m = 4;
-        RTree tree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
+        int M = 40;
+        int m = 1;
+        RTree tree = new RTree(new Dato(0, 0, 1, 1), "greene", M, m);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 39; i++) {
             int x = randomWithRange(1, 10);
             int y = randomWithRange(1, 10);
             int ancho = randomWithRange(1, 30);
@@ -18,7 +18,7 @@ public class pruebas {
             Dato dato = new Dato(x, y, ancho, alto);
             tree.insertarDato(dato);
         }
-        //tree.current_node.guardar();
+        tree.current_node.guardar();
 
 
     }

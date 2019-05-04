@@ -1,9 +1,9 @@
 public class NodoInterno extends AbstractNodo {
 
     // un nodo interno siempre se crea con 2 rectangulos, ya que  se crea a partir de overflow
-    public NodoInterno(int id, IRectangulo mbr, int M, int m){
+    public NodoInterno(int id, IRectangulo mbr, int M){
 
-        super(id, mbr, M, m);
+        super(id, mbr, M);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class NodoInterno extends AbstractNodo {
 
             }
             // aqui se debe escoger el MBR que crezca menos, para mantener el invariante 1
-            else if (rec.intersects(dato)) {
+            else{
                 double difArea= rec.difArea(dato);
                 int area= rec.ancho()*rec.alto();
                 // Nos quedamos con el el rectangulo que crece menos, en caso

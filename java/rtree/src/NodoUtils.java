@@ -129,11 +129,11 @@ public class NodoUtils {
         INodo nodo_der = null;
 
         if(n.esHoja()){
-            nodo_izq= new NodoHoja(n.getId(), r, this.M, this.m);
-            nodo_der= new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M, this.m);
+            nodo_izq= new NodoHoja(n.getId(), r, this.M);
+            nodo_der= new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M);
         }else{
-            nodo_izq= new NodoInterno(n.getId(), r, this.M, this.m);
-            nodo_der= new NodoInterno(tree.popNextId(), n.popRectangulo(), this.M, this.m);
+            nodo_izq= new NodoInterno(n.getId(), r, this.M);
+            nodo_der= new NodoInterno(tree.popNextId(), n.popRectangulo(), this.M);
         }
 
 
@@ -205,21 +205,18 @@ public class NodoUtils {
         double n_y = dif_y/r_y;
         int i_izq = 0; //indices
         int i_der = 0;
-
-        System.out.println(i_der);
-        System.out.println(i_izq);
         //se insertan
         if(n.esHoja()){
             nodo_izq = new NodoHoja(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_izq): n.indexRectangulo(r_sup)),
-                    this.M, this.m);
+                    this.M);
             nodo_der = new NodoHoja(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_der): n.indexRectangulo(r_inf)),
-                    this.M, this.m);
+                    this.M);
         }
         else{
             nodo_izq= new NodoInterno(tree.popNextId(),n.popRectangulo(n_x>n_y?n.indexRectangulo(r_izq): n.indexRectangulo(r_sup)),
-                    this.M, this.m);
+                    this.M);
             nodo_der=new NodoInterno(tree.popNextId(), n.popRectangulo(n_x>n_y?n.indexRectangulo(r_der): n.indexRectangulo(r_inf))
-                    , this.M, this.m);
+                    , this.M);
         }
 
         //se inserta el resto
@@ -321,25 +318,25 @@ public class NodoUtils {
         sort(n, 0, n.cantidadRectangulos()-1, dir_corte);
         //se insertan
         if(n.esHoja()){
-            nodo_izq = new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M, this.m);
+            nodo_izq = new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M);
             int i = 1;
             while (i < M/2 -1){
                 nodo_izq.appendRectangulo(n.popRectangulo());
                 i++;
             }
-            nodo_der = new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M, this.m);
+            nodo_der = new NodoHoja(tree.popNextId(), n.popRectangulo(), this.M);
             while(!n.isEmpty()){
                 nodo_der.appendRectangulo(n.popRectangulo());
             }
         }
         else{
-            nodo_izq= new NodoInterno(tree.popNextId(),n.popRectangulo(), this.M, this.m);
+            nodo_izq= new NodoInterno(tree.popNextId(),n.popRectangulo(), this.M);
             int i = 1;
             while (i < M/2 -1){
                 nodo_izq.appendRectangulo(n.popRectangulo());
                 i++;
             }
-            nodo_der=new NodoInterno(tree.popNextId(), n.popRectangulo(), this.M, this.m);
+            nodo_der=new NodoInterno(tree.popNextId(), n.popRectangulo(), this.M);
             while(!n.isEmpty()){
                 nodo_der.appendRectangulo(n.popRectangulo());
             }

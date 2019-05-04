@@ -16,16 +16,16 @@ public class RTree implements Serializable{
     public boolean en_memoria_principal= true;
     // indica cuando es necesario recorrer de hoja a raiz para mantener invariante 1
     protected NodoUtils u;
-    public boolean reajustar=false;
-    int M ;
-    int m;
+    public int M ;
+    public int IO_insercion=0;
+    public int IO_busqueda=0;
+
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
     public RTree(Dato rectangulo1, String split, int M, int m){
         /* este es el nodo que tenemos actualmente cargado en memoria
          siempre habra un nodo cargado en memoria */
         this.M= M;
-        this.m = m;
-        current_node= new NodoHoja(popNextId(),rectangulo1, M, m);
+        current_node= new NodoHoja(popNextId(),rectangulo1, M);
         this.idRaiz= current_node.getId();
         this.u= new NodoUtils(M, m, split);
     }
@@ -57,6 +57,11 @@ public class RTree implements Serializable{
         }
     }
 
+    public void IO_insercion(int tipo, IRectangulo rec){
+        if(tipo==1)this.IO_insercion+=1;
+        else this.IO_busqueda+=1;
+
+    }
     
 
     public void insertarDato(Dato dato){
@@ -69,7 +74,7 @@ public class RTree implements Serializable{
                 parNodos.getKey().guardar();
                 MBR nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                 MBR nuevoMbr2= (MBR) parNodos.getValue().getPadre();
-                NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M, this.m);
+                NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                 this.setIdRaiz(nuevaRaiz.getId());
                 nuevaRaiz.appendRectangulo(nuevoMbr2);
                 nuevaRaiz.guardar();
@@ -125,7 +130,7 @@ public class RTree implements Serializable{
                             parNodos.getKey().guardar();
                             nuevoMbr1= (MBR) parNodos.getKey().getPadre();
                             nuevoMbr2= (MBR) parNodos.getValue().getPadre();
-                            NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M, this.m);
+                            NodoInterno nuevaRaiz= new NodoInterno(this.popNextId(), nuevoMbr1, this.M);
                             this.setIdRaiz(nuevaRaiz.getId());
                             nuevaRaiz.appendRectangulo(nuevoMbr2);
                             nuevaRaiz.guardar();

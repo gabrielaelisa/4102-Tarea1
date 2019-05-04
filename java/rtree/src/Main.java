@@ -32,7 +32,7 @@ public class Main {
      el ancho y el largo deben ser uniformemente distribuidos en [1, 100]".*/
 
     public static void main(String[] args) {
-        int M= 143;
+        int M= 148;
         int m= (int)(M*0.4);
 
         RTree tree = new RTree(new Dato(0, 0, 1, 1), "linear", M, m);
@@ -43,7 +43,7 @@ public class Main {
 
         int anterior=0;
         long tiempo_acc=0;
-        for(int i= 9; i< 26; i++) {
+        for(int i= 6; i< 26; i++) {
             // esta resta es lo que falta insertar para el siguiente rango
             double limite = Math.pow(2, i) - Math.pow(2, anterior);
             // se crean los rectángulos a insertar
