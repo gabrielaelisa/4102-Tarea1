@@ -4,10 +4,11 @@ public class Dato extends AbstractRectangulo {
         super(-1, x, y, ancho, alto);
     }
 
-    public boolean esDato(){ return  true;}
+    public Dato(Dato dato){
+        super(-1, dato.getX(), dato.getY(), dato.ancho(), dato.alto());
+    }
 
     @Override
-    public void setidNodo(int id) {
-        return;
-    }
+    public boolean esDato(){ return  true;}
+
 }

@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class RTree implements Serializable{
@@ -205,6 +206,34 @@ public class RTree implements Serializable{
         }// Fin while
     }// Fin metodo
 
+
+
+    public ArrayList<Dato> buscar(MBR mbr){
+        ArrayList<Dato> datos = new ArrayList<>();
+        Stack<Integer> pila= new Stack<>();
+        pila.push(this.getIdRaiz());
+        while(!pila.empty()){
+            int idActual= pila.pop();
+            INodo actual= NodoUtils.leerNodo(idActual);
+            if(actual.esHoja()){
+                for(int i= 0; i< actual.cantidadRectangulos(); i++){
+                    Dato dato = (Dato) actual.getRectangulo(i);
+                    if(mbr.contains(dato)){
+                        datos.add(new Dato(dato));
+                    }
+                }
+                continue;
+            }
+            for(int i= 0; i< actual.cantidadRectangulos(); i++){
+                MBR rec= (MBR) actual.getRectangulo(i);
+                if(rec.intersects(mbr)){
+                    pila.push(rec.getId());
+                }
+            }
+        }
+
+        return datos;
+    }
 }
 
 
