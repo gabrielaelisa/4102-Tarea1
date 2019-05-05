@@ -18,6 +18,8 @@ public class RTree implements Serializable{
     public int M ;
     public int accesos=0;
     public String DIR ;
+    public int cantidad_nodos=1;
+    public int cantidad_rectangulos=1;
 
     // constructor de la raiz, recibe un dato y crea el nodo contenedor
     public RTree(Dato rectangulo1, String split, int M, int m){
@@ -47,6 +49,11 @@ public class RTree implements Serializable{
         return nextId++;
     }
 
+    public float Uso_Disco(){
+        return ((float)cantidad_rectangulos/(float) (cantidad_nodos*M));
+
+    }
+
     private class InfoNodo{
         public int id;
         public boolean visitado;
@@ -71,6 +78,8 @@ public class RTree implements Serializable{
     
 
     public void insertarDato(Dato dato){
+        // cada vez que inserto un Dato aumenta la cantidad de rectangulos
+        cantidad_rectangulos+=1;
         // Si hay solo una hoja (que es a la vez la raiz) la mantenemos en memoria hasta que se llene.
         if(en_memoria_principal){
             if(current_node.isfull()){
