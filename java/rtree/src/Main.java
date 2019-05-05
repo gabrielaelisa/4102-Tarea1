@@ -13,6 +13,10 @@ public class Main {
      el ancho y el largo deben ser uniformemente distribuidos en [1, 100]".*/
 
     public static void main(String[] args) {
+        /*int disk = Integer.parseInt(args[0]); // aca tomamos el argumento pasado por consola
+        M= (disk-245)/26 // este debe ser el M de un usuario cualquiera
+
+        */
         int M= 148;
         int m= (int)(M*0.4);
 
@@ -27,7 +31,7 @@ public class Main {
 
 
         // Se realiza un pequeño warm up
-        for(int i=0;i< 4096;i++){
+        for(int i=0;i< 2048;i++){
             int x = randomWithRange(1, 500000);
             int y = randomWithRange(1, 500000);
             int ancho = randomWithRange(1, 100);
