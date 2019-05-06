@@ -8,16 +8,15 @@ public class Main {
     }
 
 
-    //------------------ EXPERIMENTO NO CORRER ----------------------------------------
     /*"las coordenadas de uno de los vértices deben ser reales uniformemente distribuidos en el rango [0, 500000],
      el ancho y el largo deben ser uniformemente distribuidos en [1, 100]".*/
 
     public static void main(String[] args) {
-        /*int disk = Integer.parseInt(args[0]); // aca tomamos el argumento pasado por consola
-        M= (disk-245)/26 // este debe ser el M de un usuario cualquiera
+        int disk = Integer.parseInt(args[0]); // aca tomamos el argumento pasado por consola
+        int M= (int)(disk-245)/26; // este debe ser el M de un usuario cualquiera
 
-        */
-        int M= 148;
+        
+        //int M= 148;
         int m= (int)(M*0.4);
 
         int x1 = randomWithRange(1, 500000);
