@@ -32,7 +32,7 @@ comandos:
 
 	$ cd rtree
 	$ javac -sourcepath src/ -d compiled/ src/Main.java
-	$ java -classpath compiled/ Main `arg1`
+	$ java -classpath compiled/ Main <arg1>
 
 donde `arg1` es la cantidad de bytes que tiene la página de disco del computador donde se ejecuta el experimento. Por ejemplo, en el caso de este ordenador, debo correr:
 
